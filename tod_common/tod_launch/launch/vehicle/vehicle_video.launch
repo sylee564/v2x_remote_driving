@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="isSegmentation" default="false"/>
+    <arg name="HostIP" />
+    <arg name="HostPort"/>
+    <arg name="show_image"/>
+
+    <!-- AVM Streaming -->
+    <include file="$(find avm_stream)/launch/avm_stream.launch">
+        <arg name="HostIP" value="$(arg HostIP)"/>
+        <arg name="HostPort" value="$(arg HostPort)"/>
+        <arg name="show_image" value="$(arg show_image)"/>
+        <arg name="isSegmentation" value="$(arg isSegmentation)"/>
+    </include>
+
+</launch>

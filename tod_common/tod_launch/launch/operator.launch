@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<launch>
+
+    <!-- Vehicle Interface -->
+    <arg name="launchVehicleBridge" default="true"/>
+
+    <!-- Operator Interface -->
+    <arg name="launchInputDevices" default="true"/>
+
+    <include file="$(find tod_launch)/launch/operator/operator_vehicle_interface.launch">
+        <arg name="launchVehicleBridge" value="$(arg launchVehicleBridge)"/>
+    </include>
+
+    <include file="$(find tod_launch)/launch/operator/operator_operator_interface.launch">
+        <arg name="launchInputDevices" value="$(arg launchInputDevices)"/>
+    </include>
+
+    <include file="$(find tod_launch)/launch/operator/operator_control.launch">
+    </include>
+<!-- 
+    <include file="$(find tod_launch)/launch/operator/operator_video.launch">
+    </include> -->
+</launch>

@@ -1,0 +1,5 @@
+bool vehicle_emergency_stop_released
+bool vehicle_EPS_approved
+bool vehicle_ACC_approved
+bool vehicle_EPS_Status
+bool vehicle_ACC_Status

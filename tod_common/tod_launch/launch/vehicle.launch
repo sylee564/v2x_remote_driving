@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="vehicleName" value="kona"/> 
+    <arg name="vehicleID" value="123a4567"/>
+    <!-- <arg name="vehicleType" default="200"/> -->
+    <arg name="mode" default="vehicle"/>
+    <arg name="launchInputDevices" default="true"/>
+    <arg name="HostIP" default="220.90.18.53"/>
+    <arg name="HostPort" default="6000"/>
+    <arg name="show_image" default="true"/>
+
+    <!-- <param name="/vehicleName" type="string" value="$(arg vehicleName)" /> -->
+    
+    <!-- Vehicle Interface -->
+    <arg name="launchVehicleBridge" default="true"/>
+    
+
+    <!-- Common -->
+    <include file="$(find tod_launch)/launch/vehicle/vehicle_vehicle_interface.launch">
+        <arg name="launchVehicleBridge" value="$(arg launchVehicleBridge)"/>
+        <arg name="vehicleName" value="$(arg vehicleName)"/>
+        <arg name="vehicleID" value="$(arg vehicleID)"/>
+        <arg name="mode" value="$(arg mode)"/>
+    </include>
+
+    <include file="$(find tod_launch)/launch/vehicle/vehicle_operator_interface.launch">
+        <arg name="launchInputDevices" value="$(arg launchInputDevices)"/>
+    </include>
+
+    <!-- Control -->
+    <include file="$(find tod_launch)/launch/vehicle/vehicle_control.launch"/>
+
+    <!-- AVM streaming -->
+    <include file="$(find tod_launch)/launch/vehicle/vehicle_video.launch">
+        <arg name="HostIP" value="$(arg HostIP)"/>
+        <arg name="HostPort" value="$(arg HostPort)"/>
+        <arg name="show_image" value="$(arg show_image)"/>
+    </include>
+
+
+</launch>

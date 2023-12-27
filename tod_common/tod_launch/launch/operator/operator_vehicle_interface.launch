@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="launchVehicleBridge" default="true"/>
+
+    <include file="$(find tod_vehicle_bridge)/launch/tod_vehicle_bridge.launch"
+        if="$(eval launchVehicleBridge)">
+        <arg name="isVehicle" value="false"/>
+        <arg name="isOperator" value="true"/>
+    </include>
+</launch>

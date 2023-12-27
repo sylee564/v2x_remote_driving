@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="launchInputDevices" default="true"/>
+
+    <include file="$(find tod_manager)/launch/tod_manager.launch">
+        <arg name="isVehicle" value="false"/>
+        <arg name="isOperator" value="true"/>
+    </include>
+
+    <include file="$(find tod_input_devices)/launch/tod_input_devices.launch" if="$(eval launchInputDevices)">
+        <arg name = "ConfigFile" value="$(find tod_input_devices)/config/virtual.yaml"/>
+    </include>
+
+</launch>

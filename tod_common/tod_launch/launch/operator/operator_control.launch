@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="vehicleID"/>
+
+    <include file="$(find tod_control)/launch/tod_control.launch">
+        <arg name="isVehicle" value="false"/>
+        <arg name="isOperator" value="true"/>
+    </include>
+
+
+</launch>

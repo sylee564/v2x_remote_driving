@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- Configuration -->
+    <arg name="DisplayNum" value="3"/>
+    <arg name="isVehicle" value="false"/>
+    <arg name="isOperator" value="true"/>
+    <arg name="maxVelocity" value="5"/>
+    <arg name="HostPort" value="6000"/>
+    <arg name="Resolution" value="SD"/>
+    <arg name="show_image" value="false"/>
+    <arg name="Recording" value="false"/>
+    <arg name="DisplayWidth" value="1920"/>
+    <arg name="DisplayHeight" value="1080"/>
+    <arg name="isSegmentation" value="false"/>
+
+    <!-- 4 camera streaming display-->
+    <include file="$(find video_viewer)/launch/video_viewer.launch" if="$(eval DisplayNum==1)">
+        <arg name="isVehicle" value="$(arg isVehicle)"/>
+        <arg name="isOperator" value="$(arg isOperator)"/>
+        <arg name="HostPort" value="$(arg HostPort)"/>
+        <arg name="Resolution" value="$(arg Resolution)"/>
+        <arg name="show_image" value="$(arg show_image)"/>
+        <arg name="Recording" value="$(arg Recording)"/>
+        <arg name="DisplayWidth" value="$(arg DisplayWidth)"/>
+        <arg name="DisplayHeight" value="$(arg DisplayHeight)"/>
+    </include>
+
+    <include file="$(find tod_stream)/launch/tod_stream_viewer.launch" if="$(eval DisplayNum==3)">
+        <arg name="isVehicle" value="$(arg isVehicle)"/>
+        <arg name="isOperator" value="$(arg isOperator)"/>
+        <arg name="HostPort" value="$(arg HostPort)"/>
+        <arg name="Resolution" value="$(arg Resolution)"/>
+        <arg name="isSegmentation" value="$(arg isSegmentation)"/>
+        <arg name="DisplayWidth" value="$(arg DisplayWidth)"/>
+        <arg name="DisplayHeight" value="$(arg DisplayHeight)"/>
+    </include>
+
+
+</launch>

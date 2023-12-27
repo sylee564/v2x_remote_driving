@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="launchVehicleBridge"/>
+    <arg name="vehicleName"/>
+    <arg name="vehicleID"/>
+    <arg name="mode" />
+        <group if="$(eval launchVehicleBridge)">
+            <!-- Common Software -->
+            <include file="$(find tod_vehicle_bridge)/launch/tod_vehicle_bridge.launch">
+                <arg name="isVehicle" value="true"/>
+                <arg name="isOperator" value="false"/>
+                <arg name="vehicleName" value="$(arg vehicleName)"/>
+                <arg name="vehicleID" value="$(arg vehicleID)"/>
+                <!-- <arg name="vehicleType" value="$(arg vehicleType)"/> -->
+            </include>
+
+            <!-- Vehicle Hardware -->
+            <include file="$(find tod_kona_bridge)/launch/tod_kona_bridge.launch"
+                if="$(eval vehicleName=='kona' and mode=='vehicle')">
+            </include>
+    
+        </group>
+</launch>
