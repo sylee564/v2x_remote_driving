@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<launch>
+
+<arg name="isVehicle" default="false"/>
+<arg name="isOperator" default="true"/>
+<arg name="maxVelocity" default="10"/>
+
+<group ns="Operator/CommandCreation" if="$(eval isOperator)">
+    <node name="CommandCreator" pkg="tod_control" type="OperatorCommandCreator" output="screen">
+        <param name="ConstraintSteeringRate" value="false"/>
+        <param name="maxVelocity" value="$(arg maxVelocity)"/> <!-- m/s -->
+        <param name="maxAcceleration" value="1"/> <!-- m/s² -->
+        <param name="maxDeceleration" value="3"/> <!-- m/s² -->
+        <param name="maxSteeringWheelAngleRate" value="7.5"/> <!-- rad/s -->
+    </node>
+    
+    <node name="OperatorControlCommandSender" pkg="tod_control" type="OperatorControlCommandSender" output="screen"/>
+    <node name="ForceFeedbackController" pkg="tod_control" type="ForceFeedbackController" output="screen">
+        <param name="Kp" value="0.4"/>
+    </node>
+</group>
+
+<group ns="Vehicle/CommandCreation" if="$(eval isVehicle)">
+    <node name="VehicleControlCommandReceiver" pkg="tod_control" type="VehicleControlCommandReceiver" output="screen"/>
+</group>
+
+</launch>
