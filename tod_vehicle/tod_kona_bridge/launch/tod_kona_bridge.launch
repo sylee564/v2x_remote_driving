@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<launch> 
+<arg name="mode" default="vehicle"/>
+
+<group ns="/Vehicle/VehicleBridge" if="$(eval mode == 'vehicle')">
+  <include file="$(find tod_kona_bridge)/launch/novatel_driver.launch"/>
+  <node name="CanOpen" pkg="tod_kona_bridge" type="CanOpen.sh" output="screen"/>
+  <!-- <node pkg="tod_kona_bridge" type="vcanOpen.bash" name="vehicleCanOpen" output="screen"/> -->
+  <node pkg="tod_kona_bridge" type="kona_data_recv" name="VehicleDataToMsg" output="screen"/>
+
+  <node pkg="tod_kona_bridge" type="kona_control_send" name="ControlCommandToVehicle" output="screen"/>
+</group>
+
+</launch>

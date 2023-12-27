@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<launch> 
+    <arg name="isVehicle" default="false"/>
+    <arg name="isOperator" default="true"/>
+    <arg name="vehicleName" default="kona"/>
+    <arg name="vehicleID" default="123a4567"/>
+    <!-- <arg name="vehicleType" default="200"/> -->
+
+    <!--OPERATOR NODES-->
+    <group ns="/Operator/VehicleBridge" if="$(eval isOperator)">
+        <node name="VehicleDataReceiver" pkg="tod_vehicle_bridge" type="VehicleDataReceiver" output="screen"/>
+        <node name="PVDReceiver" pkg="tod_vehicle_bridge" type="PVDReceiver" output="screen"/>
+    </group>
+
+    <!-- VEHICLE NODES-->
+    <group ns="/Vehicle/VehicleBridge" if="$(eval isVehicle)">
+      <node pkg="tod_vehicle_bridge" type="VehicleDataToPVD" name="VehicleDataToPVD" output="screen">
+        <param name="vehicleName" value="$(arg vehicleName)" />
+        <param name="vehicleID" value="$(arg vehicleID)" />
+        <!-- <param name="vehicleType" value="$(arg vehicleType)" /> -->
+      </node>
+      <node name="VehicleDataSender" pkg="tod_vehicle_bridge" type="VehicleDataSender" output="screen"/>
+      <node name="PVDSender" pkg="tod_vehicle_bridge" type="PVDSender" output="screen"/>
+    </group>
+
+</launch>
