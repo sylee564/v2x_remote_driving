@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<launch>
+
+<arg name="isVehicle" default="true"/>
+<arg name="IpAddress" default="127.0.0.1"/>
+
+<group ns="Vehicle/Manager" if="$(arg isVehicle)">
+    <node name="VehicleManagerXavier" pkg="tod_manager" type="VehicleManagerXavier" output="screen">
+       <param name="IpAddress" value="$(arg IpAddress)" />
+    </node>
+</group>
+
+</launch>

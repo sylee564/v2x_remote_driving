@@ -1,0 +1,83 @@
+ConfigNodes:
+  - OBU-IpAddress
+  - OBU-Port
+  - OBU-DeviceType
+  - OBU-TelecomType
+  - OBU-ServiceID
+  - OBU-ActionType
+  - OBU-RegionID
+  - OBU-CommunicationID
+  - OBU-PayloadType
+
+OBU-IpAddress:
+  - "220.90.18.53"
+  - "192.168.1.11"
+  - "192.168.1.10"
+  
+OBU-Port:
+  - 47347
+  - 47348
+  
+OBU-DeviceType:
+  0: "UNKNOWN"
+  1: "OBU"
+  2: "RSU"
+
+OBU-TelecomType:
+  0: "UNKNOWN"
+  1: "4G"
+  2: "5G-PC5"
+  3: "5G-uu"
+  4: "6G"
+  
+OBU-ServiceID:
+  0: "UNKNOWN"
+  1: "Platooning"
+  2: "Sensor Sharing"
+  3: "Remote Driving"
+  4: "Advanced Driving"
+  
+OBU-ActionType:
+  0: "UNKNOWN"
+  1: "Request"
+  2: "Response"
+
+OBU-RegionID:
+  0: "UNKNOWN"
+  1: "Seoul"
+  2: "Sejong"
+  3: "Busan"
+  4: "Deageon"
+  5: "Incheon"
+  6: "Daegu"
+  7: "Daegu KIAPI"
+  8: "Cheongju"
+  9: "Seongnam"
+
+OBU-CommunicationID:
+  0: "UNKNOWN"
+  1: "V2V"
+  2: "V2I"
+  3: "V2P"
+  4: "V2N" 
+  5: "I2V"
+  6: "I2P"
+  7: "I2N"
+  8: "P2V"
+  9: "P2I"
+  10: "P2N"
+  11: "N2V"
+  12: "N2I"
+  13: "N2P"
+
+OBU-PayloadType:
+  0: "UNKNOWN"
+  1: "SAE J2735 BSM"
+  2: "SAE J2735 PVD"
+  3: "Platooning"
+  4: "Sensor Sharing"
+  5: "Remote Driving"
+  6: "Advanced Driving"
+
+
+

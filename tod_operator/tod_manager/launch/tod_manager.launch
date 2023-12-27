@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<launch>
+
+<arg name="isVehicle" default="true"/>
+<arg name="isOperator" default="true"/>
+
+<group ns="Operator/Manager" if="$(eval isOperator)">
+    <node name="OperatorManager" pkg="tod_manager" type="OperatorManager" output="screen">
+        <remap from="change_input_device" to="/Operator/InputDevices/InputDevice/change_input_device"/>
+    </node>
+</group>
+
+<group ns="Vehicle/Manager" if="$(arg isVehicle)">
+    <node name="VehicleManager" pkg="tod_manager" type="VehicleManager" output="screen">
+        <remap from="change_input_device" to="/Operator/InputDevices/InputDevice/change_input_device"/>
+    </node>
+</group>
+
+</launch>

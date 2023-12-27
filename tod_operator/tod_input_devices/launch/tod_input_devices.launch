@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<launch>
+<arg name = "ConfigMode" default="false"/>
+<arg name = "ConfigFile" default="$(find tod_input_devices)/config/virtual.yaml"/>
+
+<group ns="Operator/InputDevices">
+    <node name="InputDevice" pkg="tod_input_devices" type="InputDevice" output="screen">
+          <rosparam command="load" file="$(arg ConfigFile)" /> 
+          <param name="ConfigMode" value="$(arg ConfigMode)"/>
+          <param name="debug" value="false"/>
+    </node>
+    <node name="UsbEventHandler" pkg="tod_input_devices" type="UsbEventHandler" output="screen"/>
+</group>
+
+</launch>
