@@ -1,0 +1,24 @@
+set(USB_SOURCES
+    UsbInputDevice.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../General/InputDevice.cpp)
+
+set(TARGET UsbInputDevice)
+add_library(UsbInputDevice
+    ${USB_SOURCES}
+)  
+
+target_include_directories(UsbInputDevice
+    PRIVATE
+        ${CMAKE_CURRENT_BINARY_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/../General
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+install(TARGETS UsbInputDevice
+   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+set(DEVICE_TARGETS ${DEVICE_TARGETS} UsbInputDevice PARENT_SCOPE)

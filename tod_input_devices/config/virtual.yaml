@@ -1,0 +1,28 @@
+#for configuration start: roslaunch tod_input_devices tod_input_devices.launch ConfigMode:=true
+Type: "Virtual" #Usb oder Virtual
+
+ButtonConfig:
+  "IndicatorLeft": 85                   #u
+  "IndicatorRight": 79                  #o
+  "EmergencyLight": 73                  #i
+  "Honk": 32                            #space
+  "Park": 80                            #p
+  "Reverse": 82                         #r
+  "Neutral": 78                         #n
+  "Drive": 68                           #d
+  "IncreaseSpeed": 87                   #w
+  "DecreaseSpeed": 83                   #s
+  "Remote": 16777220                    #right enter
+  "VideoStream": 16777248               #right shift
+
+AxisConfig:
+  "Steering": 0
+  "Throttle": 1
+  "Brake": 2
+
+InputDeviceHasSeparateBrakingAxis: false #If False: AxisRange/Brake is ignored (see below)
+
+InvertAxis:
+  "Steering": false 
+  "Throttle": false
+  "Brake": false
