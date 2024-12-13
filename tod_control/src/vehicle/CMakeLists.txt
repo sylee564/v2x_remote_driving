@@ -1,9 +1,23 @@
-set(TARGETS ${TARGETS} VehicleControlCommandReceiver)
-add_executable(VehicleControlCommandReceiver ControlCommandReceiver.cpp)
-add_dependencies(VehicleControlCommandReceiver ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(VehicleControlCommandReceiver ${catkin_LIBRARIES})
-target_include_directories(VehicleControlCommandReceiver PRIVATE ${catkin_INCLUDE_DIRS})
+set(VEHICLE_NODE ControlCmdReceiverNode.cpp)
+set(VEHICLE_CPP ControlCmdReceiver.cpp)
+set(TARGET_VEHICLE_NAME ControlCmdReceiver)
 
-install(TARGETS ${TARGETS}
-    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+add_executable(${TARGET_VEHICLE_NAME}
+    ${VEHICLE_NODE}
+    ${VEHICLE_CPP}
+)
+add_dependencies(${TARGET_VEHICLE_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_include_directories(${TARGET_VEHICLE_NAME} PRIVATE
+    ${catkin_INCLUDE_DIRS}  
+    ${CMAKE_CURRENT_SOURCE_DIR})
+target_compile_features(${TARGET_VEHICLE_NAME} PUBLIC cxx_std_17)
+target_link_libraries(${TARGET_VEHICLE_NAME}
+    PRIVATE
+    ${catkin_LIBRARIES}
+    Threads::Threads)
+
+install(TARGETS ${TARGET_VEHICLE_NAME}
+   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

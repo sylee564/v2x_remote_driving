@@ -13,8 +13,9 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   std_msgs
   tod_msgs
-  tod_core
-  tod_network
+  driver_tcpip_msgs
+  tod_helper
+
 )
 
 
@@ -27,7 +28,8 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES tod_control
- CATKIN_DEPENDS message_generation message_runtime roscpp std_msgs tod_msgs tod_network
+  
+  CATKIN_DEPENDS message_generation message_runtime roscpp std_msgs tod_msgs driver_tcpip_msgs tod_helper
 #  DEPENDS system_lib
 )
 
@@ -45,19 +47,19 @@ include_directories(
 #############
 ## Install ##
 #############
-option(OPERATOR "Build operator targets" ON)
-if (${OPERATOR})
+# option(OPERATOR "Build operator targets" ON)
+# if (${OPERATOR})
     add_subdirectory(src/operator)
-else()
-    message("skipping ${PROJECT_NAME} operator targets")
-endif()
+# else()
+#     message("skipping ${PROJECT_NAME} operator targets")
+# endif()
 
-option(VEHICLE "Build vehicle targets" ON)
-if (${VEHICLE})
+# option(VEHICLE "Build vehicle targets" OFF)
+# if (${VEHICLE})
     add_subdirectory(src/vehicle)
-else()
-    message("skipping ${PROJECT_NAME} vehicle targets")
-endif()
+# else()
+#     message("skipping ${PROJECT_NAME} vehicle targets")
+# endif()
 
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)

@@ -2,9 +2,9 @@
 
 ForceFeedbackController::ForceFeedbackController(ros::NodeHandle &nh)
     : _nh{nh}  {
-    std::string vehicleDataTopic{"/Operator/VehicleBridge/vehicle_data"};
-    _subscribers[vehicleDataTopic] = _nh.subscribe<tod_msgs::VehicleData>(
-        vehicleDataTopic, 5, [this](const tod_msgs::VehicleDataConstPtr &msg) {
+    std::string vehicleDataTopic{"/Operator/kona/probe_vehicle_data"};
+    _subscribers[vehicleDataTopic] = _nh.subscribe<tod_msgs::ProbeVehicleData>(
+        vehicleDataTopic, 5, [this](const tod_msgs::ProbeVehicleDataConstPtr &msg) {
             _vehicleDataMsg = msg;});
 
     std::string ctrlCmdTopic{"/Operator/InputDevices/joystick"};
@@ -35,7 +35,7 @@ void ForceFeedbackController::run() {
             // double currentWheelPosition =
             //     (_invertSteeringInGearReverse && _vehicleDataMsg->gearPosition == eGearPosition::GEARPOSITION_REVERSE)
             //         ? -_operatorSWA : _operatorSWA;
-            double desiredWheelPosition = _vehicleDataMsg->steeringWheelAngle;
+            double desiredWheelPosition = tod_helper::Vehicle::Model::deg2rad(_vehicleDataMsg->steering_wheel);
             
             double ffValue = _piCtrler->get_input(currentWheelPosition, desiredWheelPosition);
             ffValue = std::clamp(ffValue, -0.8, 0.8); // -1.0, 1.0

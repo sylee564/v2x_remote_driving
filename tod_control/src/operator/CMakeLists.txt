@@ -14,12 +14,6 @@ add_dependencies(ForceFeedbackController ${${PROJECT_NAME}_EXPORTED_TARGETS} ${c
 target_link_libraries(ForceFeedbackController ${catkin_LIBRARIES})
 target_include_directories(ForceFeedbackController PRIVATE ${catkin_INCLUDE_DIRS})
 
-set(TARGETS ${TARGETS} OperatorControlCommandSender)
-add_executable(OperatorControlCommandSender ControlCommandSender.cpp)
-add_dependencies(OperatorControlCommandSender ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(OperatorControlCommandSender ${catkin_LIBRARIES})
-target_include_directories(OperatorControlCommandSender PRIVATE ${catkin_INCLUDE_DIRS})
-
 install(TARGETS ${TARGETS}
     RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

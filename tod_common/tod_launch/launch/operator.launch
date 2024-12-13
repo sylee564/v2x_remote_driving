@@ -1,23 +1,46 @@
 <?xml version="1.0"?>
 <launch>
-
-    <!-- Vehicle Interface -->
-    <arg name="launchVehicleBridge" default="true"/>
-
-    <!-- Operator Interface -->
     <arg name="launchInputDevices" default="true"/>
+    <arg name="isOperator" default="true"/>
+    <arg name="isVehicle" default="false"/>
+    <arg name="maxVelocity" default="10"/>
+    <arg name="OperatorID" default="123456"/>
+    <arg name="Resolution" default="SD"/>
+    <arg name="DisplayWidth" default="1920"/>
+    <arg name="DisplayHeight" default="1080"/>
 
-    <include file="$(find tod_launch)/launch/operator/operator_vehicle_interface.launch">
-        <arg name="launchVehicleBridge" value="$(arg launchVehicleBridge)"/>
+
+    <include file="$(find tod_manager)/launch/tod_manager.launch">
+        <arg name="isOperator" value="$(arg isOperator)"/>
+        <arg name="isVehicle" value="$(arg isVehicle)"/>
     </include>
 
-    <include file="$(find tod_launch)/launch/operator/operator_operator_interface.launch">
-        <arg name="launchInputDevices" value="$(arg launchInputDevices)"/>
+    <include file="$(find tod_input_devices)/launch/tod_input_devices.launch" if="$(eval launchInputDevices)">
+        <arg name = "ConfigFile" value="$(find tod_input_devices)/config/g29_ff.yaml"/>
     </include>
 
-    <include file="$(find tod_launch)/launch/operator/operator_control.launch">
+    <include file="$(find tod_control)/launch/tod_control.launch">
+        <arg name="isOperator" value="$(arg isOperator)"/>
+        <arg name="isVehicle" value="$(arg isVehicle)"/>
+        <arg name="maxVelocity" value="$(arg maxVelocity)"/>
+        <arg name="OperatorID" value="$(arg OperatorID)"/>
     </include>
-<!-- 
-    <include file="$(find tod_launch)/launch/operator/operator_video.launch">
+
+    <include file="$(find tod_vehicle_bridge)/launch/tod_vehicle_bridge.launch">
+        <arg name="isOperator" value="$(arg isOperator)"/>
+        <arg name="isVehicle" value="$(arg isVehicle)"/>
+    </include>
+
+    <include file="$(find driver_tcpip)/launch/driver_tcpip.launch">
+        <arg name="isVehicle" value="$(arg isVehicle)"/>
+    </include>
+
+    <!-- <include file="$(find tod_stream)/launch/tod_stream.launch">
+        <arg name="isVehicle" value="$(arg isVehicle)"/>
+        <arg name="isOperator" value="$(arg isOperator)"/>
+		<arg name="Resolution" value="$(arg Resolution)" />
+        <arg name="DisplayWidth" value="$(arg DisplayWidth)"/>
+        <arg name="DisplayHeight" value="$(arg DisplayHeight)"/>
     </include> -->
+
 </launch>

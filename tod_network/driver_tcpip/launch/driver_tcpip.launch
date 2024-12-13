@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch> 
+
+<arg name="isVehicle" default="false"/>
+
+    <node name="driver_tcpip" pkg="driver_tcpip" type="driver_tcpip" output="screen">
+        <param name="isVehicle" value="$(arg isVehicle)"/>
+    </node>
+</launch>

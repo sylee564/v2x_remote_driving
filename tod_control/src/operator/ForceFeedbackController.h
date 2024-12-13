@@ -3,12 +3,13 @@
 #include <string>
 #include <memory>
 #include <map>
-#include <tod_msgs/VehicleData.h>
+#include <tod_msgs/ProbeVehicleData.h>
 #include <sensor_msgs/Joy.h>
 #include <std_msgs/Float64.h>
 #include <tod_msgs/joystickConfig.h>
 // #include "tod_core/VehicleParameters.h"
 #include "tod_msgs/VehicleEnums.h"
+#include <tod_helper/vehicle/Model.h>
 
 class PIController {
 public:
@@ -55,6 +56,6 @@ private:
     std::map<std::string, ros::Subscriber> _subscribers;
     bool _invertSteeringInGearReverse{false};
     ros::Publisher _pubForceFeedback;
-    tod_msgs::VehicleDataConstPtr _vehicleDataMsg{nullptr};
+    tod_msgs::ProbeVehicleDataConstPtr _vehicleDataMsg{nullptr};
     double _operatorSWA{0.0};
 };

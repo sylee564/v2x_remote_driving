@@ -1,4 +1,11 @@
 std_msgs/Header header
-int64 latencyUsec
+uint16 latencyUsec
 int32 sizeBit
-uint64 seqNum
+uint16 seqNum
+uint16 distance
+uint16 modem_latency
+tod_msgs/modemStatusRX rx_modem_status
+tod_msgs/modemStatusTX tx_modem_status
+tod_msgs/CommUnitStatus rx_comm_status
+tod_msgs/CommUnitStatus tx_comm_status
+tod_msgs/V2XDataBase rx_v2x_db
