@@ -9,4 +9,4 @@
 ● Release Version
    - 23.12.27 : the first release(Version 1.0)
    - 24.12.13 : seconds release(version 1.5)
-     
+   - 26.11.13 : seconds release(version 2.0) 
