@@ -1,0 +1,9 @@
+# WSM Service Request and Response
+uint8 action                    # 0:add PSID, 1:delete PSID, 2: delete all
+uint32 request_psid
+
+---
+bool success
+string message
+uint8 action_result             # 0: WSR failure, 1: added, 2:already added, 3: deleted, 4:not exist, 5: all deleted
+uint32 response_psid

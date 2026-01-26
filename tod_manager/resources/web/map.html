@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>MapLibre + Qt WebChannel (KR-bounded)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- MapLibre (v2.4.0: Qt WebEngine 구버전 호환) -->
+  <link href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel="stylesheet"/>
+  <script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
+
+  <!-- Qt WebChannel -->
+  <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+
+  <!-- globalThis 폴리필 -->
+  <script>if (typeof window.globalThis === 'undefined') { window.globalThis = window; }</script>
+
+  <style>html,body,#map{height:100%;width:100%;margin:0}</style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+  /* ===== 0) 설정 ===== */
+  // (A) 로컬/사내망 타일을 쓰고 싶으면 아래를 true로 바꾸고 URL을 지정하세요.
+  const USE_LOCAL_TILES   = false;
+  const LOCAL_TILE_URL    = "https://tiles.example.local/osm/{z}/{x}/{y}.png";
+  const LOCAL_GLYPHS_URL  = "https://tiles.example.local/fonts/{fontstack}/{range}.pbf";
+
+  // (B) MapTiler 키(공용 CDN용) — 키 없으면 OSM France로 폴백
+  const MAPTILER_KEY          = "i5KrN1DoINtRncixlVFK"; // 예: "XXXXXXXXXXXX"
+  const USE_OSMFR_FALLBACK    = (!MAPTILER_KEY || MAPTILER_KEY === "YOUR_MAPTILER_KEY") && !USE_LOCAL_TILES;
+
+  // 대한민국 경계 (제주/울릉도 포함 여유)
+  const KR_MIN_LON = 124.5, KR_MAX_LON = 131.2;
+  const KR_MIN_LAT = 33.0,  KR_MAX_LAT = 38.9;
+  const KOREA_BOUNDS = [[KR_MIN_LON, KR_MIN_LAT], [KR_MAX_LON, KR_MAX_LAT]];
+
+  // 경계 밖일 때 사용할 좌표 + 초기 줌
+  const FALLBACK_LON = 127.4430473;
+  const FALLBACK_LAT = 36.7278803;
+  const FIRST_FIX_ZOOM = 16;   // 첫 위치 고정 줌
+  const FOLLOW_ZOOM    = 16; // follow 시 줌 유지. 숫자로 지정하면 고정 줌
+
+  /* ===== 1) 아이콘 SVG ===== */
+    const ROBOT_SVG = `
+  <svg height="512" viewBox="0 0 64 64" width="512" xmlns="http://www.w3.org/2000/svg" id="fi_6086800">
+    <g id="Layer_32" data-name="Layer 32"><circle cx="11" cy="5" fill="#7a838b" r="2"></circle>
+      <path d="m11 23h42a4 4 0 0 1 4 4v28a0 0 0 0 1 0 0h-50a0 0 0 0 1 0 0v-28a4 4 0 0 1 4-4z" fill="#d6e4e8"></path>
+      <circle cx="52" cy="52" fill="#7a838b" r="9"></circle>
+      <circle cx="52" cy="52" fill="#d6e4e8" r="5"></circle>
+      <circle cx="12" cy="52" fill="#7a838b" r="9"></circle>
+      <circle cx="12" cy="52" fill="#d6e4e8" r="5"></circle>
+      <path d="m53 23h-42a4 4 0 0 0 -4 4v2h32l9 4h9v-6a4 4 0 0 0 -4-4z" fill="#7a838b"></path>
+      <path d="m24 33h16v16h-16z" fill="#fcbe42"></path><path d="m29 33h6v8h-6z" fill="#f7b237"></path>
+      <path d="m58 44.019v-17.019a5.006 5.006 0 0 0 -5-5h-41v-14.184a3 3 0 1 0 -2 0v14.284a5.009 5.009 0 0 0 -4 4.9v17.019a9.991 9.991 0 1 0 15.159 11.981h21.682a9.994 9.994 0 1 0 15.159-11.981zm-47-40.019a1 1 0 1 1 -1 1 1 1 0 0 1 1-1zm1 56a8 8 0 1 1 8-8 8.009 8.009 0 0 1 -8 8zm9.8-6a9.99 9.99 0 0 0 -13.8-11.159v-12.841h30.788l.806.358a.988.988 0 0 0 .405.087 1 1 0 0 0 .407-1.915l-1-.444a1 1 0 0 0 -.406-.086h-31v-1a3 3 0 0 1 3-3h42a3 3 0 0 1 3 3v5h-7.788l-3.806-1.691a1 1 0 1 0 -.812 1.827l4 1.778a1 1 0 0 0 .406.086h8v8.841a10 10 0 0 0 -13.8 11.159zm30.2 6a8 8 0 1 1 8-8 8.009 8.009 0 0 1 -8 8z"></path>
+      <path d="m52 46a6 6 0 1 0 6 6 6.006 6.006 0 0 0 -6-6zm0 10a4 4 0 1 1 4-4 4 4 0 0 1 -4 4z"></path>
+      <path d="m12 46a6 6 0 1 0 6 6 6.006 6.006 0 0 0 -6-6zm0 10a4 4 0 1 1 4-4 4 4 0 0 1 -4 4z"></path>
+      <path d="m40 32h-16a1 1 0 0 0 -1 1v16a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-16a1 1 0 0 0 -1-1zm-6 2v6h-4v-6zm5 14h-14v-14h3v7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7h3z"></path>
+      <path d="m32 14a3.01 3.01 0 0 0 -2.6 1.5 1 1 0 0 0 1.731 1 1.045 1.045 0 0 1 1.734 0 1 1 0 0 0 1.731-1 3.01 3.01 0 0 0 -2.596-1.5z"></path>
+      <path d="m40 10.929a1 1 0 0 0 .662-1.749 13.389 13.389  0 0 0 -17.324 0 1 1 0 0 0 1.324 1.5 11.392 11.392 0 0 1 14.676 0 1 1 0 0 0 .662.249z"></path>
+      <path d="m20.637 7.872a17.82 17.82 0 0 1 11.363-3.872 17.82 17.82 0 0 1 11.363 3.872 1 1 0 0 0 1.274-1.543 19.833 19.833 0 0 0 -12.637-4.329 19.833 19.833 0 0 0 -12.637 4.329 1 1 0 0 0 1.274 1.543z"></path>
+      <path d="m36.242 13.757a1 1 0 0 0 .707-1.707 7 7 0 0 0 -9.9 0 1 1 0 1 0 1.414 1.414 5 5 0 0 1 7.07 0 .993.993 0 0 0 .709.293z"></path>
+      </g>
+    </svg>`.trim();
+
+  const CAR_SVG = `
+  <svg height="512" viewBox="0 0 38 58" width="512" xmlns="http://www.w3.org/2000/svg">
+    <g fill="none">
+      <rect fill="#79808f" height="8" rx="1" width="38" y="10"/>
+      <rect fill="#79808f" height="8" rx="1" width="38" y="40"/>
+      <path d="M13 0h12c4.97 0 9 4.03 9 9v39c0 5.52-4.48 10-10 10H14C8.48 58 4 53.52 4 48V9C4 4.03 8.03 0 13 0z" fill="#b9bfcc"/>
+      <path d="M29.9 21.825l-3.343 7.542a1.07 1.07 0 0 1-.941.633H12.383a1.07 1.07 0 0 1-.941-.633l-3.342-7.542a1.07 1.07 0 0 1 .687-1.54c6.702-1.713 13.726-1.713 20.428 0a1.07 1.07 0 0 1 .685 1.54z" fill="#2783ec"/>
+      <path d="M26 43v3.88a1 1 0 0 1-.63.937c-4.1 1.577-8.64 1.577-12.74 0a1 1 0 0 1-.63-.937V43a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1z" fill="#2783ec"/>
+    </g>
+  </svg>`.trim();
+
+  /* ===== 2) SVG → ImageData (안전 로딩) ===== */
+  function svgStringToImageData(svgString, sizePx) {
+    sizePx = (typeof sizePx === 'number') ? sizePx : 256;
+    return new Promise(function(resolve, reject){
+      try {
+        var url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgString.trim());
+        var img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = function(){
+          try {
+            var c = document.createElement('canvas'); c.width = sizePx; c.height = sizePx;
+            var ctx = c.getContext('2d');
+            ctx.clearRect(0,0,sizePx,sizePx);
+            ctx.drawImage(img, 0, 0, sizePx, sizePx);
+            resolve(ctx.getImageData(0,0,sizePx,sizePx));
+          } catch(e) { reject(e); }
+        };
+        img.onerror = function(e){ reject(new Error("SVG image load failed")); };
+        img.src = url;
+      } catch (e) { reject(e); }
+    });
+  }
+  async function addSvgIconAsImage(name, svgString, sizePx){
+    if (typeof sizePx !== 'number') sizePx = 256;
+    if (map.hasImage(name)) map.removeImage(name);
+    try {
+      const id = await svgStringToImageData(svgString, sizePx);
+      map.addImage(name, id, { pixelRatio: 1 });
+    } catch(e) {
+      console.error("addSvgIconAsImage failed:", name, e);
+    }
+  }
+
+  /* ===== 3) 스타일: 로컬/OSMFR/MapTiler ===== */
+  let rasterSource;
+  let glyphsUrl;
+
+  if (USE_LOCAL_TILES) {
+    rasterSource = { type: "raster", tiles: [LOCAL_TILE_URL], tileSize: 256, attribution: "© OpenStreetMap contributors" };
+    glyphsUrl    = LOCAL_GLYPHS_URL;
+  } else if (USE_OSMFR_FALLBACK) {
+    rasterSource = {
+      type: "raster",
+      tiles: [
+        "https://a.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png",
+        "https://b.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png",
+        "https://c.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png"
+      ],
+      tileSize: 256,
+      attribution: "© OpenStreetMap contributors, tiles © osmfr"
+    };
+    glyphsUrl = "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf";
+  } else {
+    rasterSource = {
+      type: "raster",
+      tiles: [ "https://api.maptiler.com/maps/basic/256/{z}/{x}/{y}.png?key=" + MAPTILER_KEY ],
+      tileSize: 256,
+      attribution: "© OpenStreetMap contributors, © MapTiler"
+    };
+    glyphsUrl = "https://api.maptiler.com/fonts/{fontstack}/{range}.pbf?key=" + MAPTILER_KEY;
+  }
+
+  const rasterStyle = {
+    version: 8,
+    glyphs: glyphsUrl,
+    sources: { "base-tiles": rasterSource },
+    layers: [{ id:"base-tiles", type:"raster", source:"base-tiles" }]
+  };
+
+  /* ===== 4) 지도 생성 (대한민국 범위 고정) ===== */
+  const map = new maplibregl.Map({
+    container:'map',
+    style:rasterStyle,
+    center:[FALLBACK_LON, FALLBACK_LAT],
+    zoom:16,
+    fadeDuration: 0,
+    renderWorldCopies: false,
+    prefetchZoomDelta: 1,
+    maxBounds: KOREA_BOUNDS
+  });
+  map.addControl(new maplibregl.NavigationControl(),'top-right');
+
+  /* ===== 5) 준비/큐 ===== */
+  let ready=false, pending=[];
+  const runOrQueue = (fn)=> ready ? fn() : pending.push(fn);
+
+  /* ===== 6) 좌표/보정 유틸 ===== */
+  const toNum = (v)=> (typeof v === 'string') ? Number(v) : v;
+  function clampToKorea(lon, lat){
+    if (lon >= KR_MIN_LON && lon <= KR_MAX_LON && lat >= KR_MIN_LAT && lat <= KR_MAX_LAT) {
+      return [lon, lat];
+    }
+    return [FALLBACK_LON, FALLBACK_LAT];
+  }
+  function normalizeLatLon(a, b) {
+    const A = toNum(a), B = toNum(b);
+    if (!Number.isFinite(A) || !Number.isFinite(B)) {
+      console.error('Bad coords', a, b); return { lat: FALLBACK_LAT, lon: FALLBACK_LON };
+    }
+    let lat, lon;
+    if (Math.abs(A) > 90 && Math.abs(A) <= 180 && Math.abs(B) <= 90) {
+      lon = A; lat = B; // [lon,lat]
+    } else if (Math.abs(A) <= 90 && Math.abs(B) <= 180) {
+      lat = A; lon = B; // [lat,lon]
+    } else {
+      lat = Math.max(-90, Math.min(90, A));
+      lon = Math.max(-180, Math.min(180, B));
+    }
+    const clamped = clampToKorea(lon, lat);
+    return { lat: clamped[1], lon: clamped[0] };
+  }
+  function centerTo(lon, lat, zoom){
+    const clamped = clampToKorea(lon, lat);
+    const cz = (typeof zoom === 'number') ? zoom : map.getZoom();
+    map.easeTo({ center:[clamped[0], clamped[1]], zoom: cz, duration:600 });
+  }
+
+  /* ===== 7) on load: 아이콘/레이어 ===== */
+  map.on('load', async function(){
+    try{
+      await addSvgIconAsImage('robot-icon', ROBOT_SVG, 100);
+      await addSvgIconAsImage('car-icon',   CAR_SVG,   100);
+
+      if (!map.getSource('robots')) map.addSource('robots', { type:'geojson', data:{ type:'FeatureCollection', features:[] } });
+      if (!map.getSource('cars'))   map.addSource('cars',   { type:'geojson', data:{ type:'FeatureCollection', features:[] } });
+
+      const smallIcon = ['interpolate',['linear'],['zoom'], 12, 0.12, 14, 0.18, 16, 0.28, 18, 0.50, 20, 0.90];
+
+      if (!map.getLayer('robots-icons')){
+        map.addLayer({
+          id:'robots-icons', type:'symbol', source:'robots',
+          layout:{
+            'icon-image':'robot-icon',
+            'icon-size': smallIcon,
+            'icon-allow-overlap': true,
+            'icon-rotation-alignment':'map',
+            'icon-rotate': ['coalesce', ['get','heading'], 0]
+          }
+        });
+      }
+      if (!map.getLayer('cars-icons')){
+        map.addLayer({
+          id:'cars-icons', type:'symbol', source:'cars',
+          layout:{
+            'icon-image':'car-icon',
+            'icon-size': smallIcon,
+            'icon-allow-overlap': true,
+            'icon-rotation-alignment':'map',
+            'icon-rotate': ['coalesce', ['get','heading'], 0]
+          }
+        });
+      }
+
+      const labelLayout = {
+        'text-field': ['coalesce', ['get','vehicle_id'], ''],
+        'text-font': USE_OSMFR_FALLBACK ? ['Open Sans Regular','Open Sans Bold']
+                                        : ['Noto Sans Regular','Noto Sans Bold'],
+        'text-size': 10,
+        'text-offset': [0, 1.2],
+        'text-anchor': 'bottom',
+        'text-optional': true
+      };
+      const labelPaint = { 'text-color':'#111', 'text-halo-color':'#fff', 'text-halo-width': 2 };
+
+      if (!map.getLayer('robots-labels')){
+        map.addLayer({ id:'robots-labels', type:'symbol', source:'robots',
+          layout: labelLayout, paint: labelPaint });
+      }
+      if (!map.getLayer('cars-labels')){
+        map.addLayer({ id:'cars-labels', type:'symbol', source:'cars',
+          layout: labelLayout, paint: labelPaint });
+      }
+
+      ready = true; pending.forEach(fn=>{ try{fn()}catch(e){console.error(e)} }); pending = [];
+    }catch(e){ console.error('init failed', e); }
+  });
+
+  /* ===== 8) 채널 연결 및 좌표 적용 ===== */
+  new QWebChannel(qt.webChannelTransport, function(ch){
+    const Bridge = ch.objects.Bridge;
+
+    let firstRobotFix = false;
+    let followEnabled = true;
+    let followCooldown;
+
+    // (선택) C++에서 follow 모드 on/off 제어
+    if (Bridge.setFollowEnabled) {
+      Bridge.setFollowEnabled.connect(function(enabled){
+        followEnabled = !!enabled;
+      });
+    }
+
+    function pauseFollow(ms){
+      ms = (typeof ms === 'number') ? ms : 7000;
+      followEnabled = false;
+      clearTimeout(followCooldown);
+      followCooldown = setTimeout(function(){ followEnabled = true; }, ms);
+    }
+    map.on('dragstart', ()=> pauseFollow());
+    map.on('zoomstart', ()=> pauseFollow());
+
+    // heading/id 파싱
+    function parseHeadingAndId(c, d) {
+      if (typeof c === 'number' && (d === undefined || typeof d === 'string'))
+        return { heading: c, id: (typeof d === 'string') ? d : '' };
+      if (typeof c === 'string' && d === undefined)
+        return { heading: 0, id: c };
+      return { heading: 0, id: '' };
+    }
+
+    // 로봇 위치 업데이트 (아이콘이 ‘상단이 앞’이면 보정 필요: 예제 +270)
+    Bridge.setRobotPosition.connect(function(lon, lat, c, d){ runOrQueue(function(){
+      const p = normalizeLatLon(lon, lat);
+      const parsed = parseHeadingAndId(c, d);
+
+      const base = Number.isFinite(parsed.heading) ? parsed.heading : 0;
+      const robotHeading = ((base + 270) % 360 + 360) % 360;
+
+      const src = map.getSource('robots'); if (!src) return;
+      src.setData({
+        type:'FeatureCollection',
+        features:[{
+          type:'Feature',
+          properties:{ heading: robotHeading, vehicle_id: (parsed.id || '') },
+          geometry:{ type:'Point', coordinates:[p.lon, p.lat] }
+        }]
+      });
+
+      if (!firstRobotFix) {
+        firstRobotFix = true;
+        centerTo(p.lon, p.lat, FIRST_FIX_ZOOM);
+      } else if (followEnabled) {
+        centerTo(p.lon, p.lat, FOLLOW_ZOOM);
+      }
+    }); });
+
+    // 차량 위치 업데이트 (아이콘이 ‘상단이 앞’이라 가정, 보정 없음)
+    Bridge.setCarPosition.connect(function(lon, lat, c, d){ runOrQueue(function(){
+      const p = normalizeLatLon(lon, lat);
+      const parsed = parseHeadingAndId(c, d);
+      const carHeading = Number.isFinite(parsed.heading) ? parsed.heading : 0;
+
+      const src = map.getSource('cars'); if (!src) return;
+      src.setData({
+        type:'FeatureCollection',
+        features:[{
+          type:'Feature',
+          properties:{ heading: carHeading, vehicle_id: (parsed.id || '') },
+          geometry:{ type:'Point', coordinates:[p.lon, p.lat] }
+        }]
+      });
+    }); });
+
+    // 외부에서 카메라 이동 (좌표 순서 통일: lon, lat, zoom)
+    Bridge.panTo.connect(function(lon, lat, zoom){ runOrQueue(function(){
+      const p = normalizeLatLon(lon, lat);
+      centerTo(p.lon, p.lat, zoom);
+    }); });
+  });
+
+  // (선택) 초기 뷰 보정
+  // setTimeout(function(){ centerTo(FALLBACK_LON, FALLBACK_LAT, 17); }, 800);
+</script>
+</body>
+</html>

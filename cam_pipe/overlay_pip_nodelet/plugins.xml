@@ -1,0 +1,7 @@
+<library path="liboverlay_pip_nodelet">
+  <class name="overlay_pip_nodelet/OverlayPipNodelet"
+         type="overlay_pip_nodelet::OverlayPipNodelet"
+         base_class_type="nodelet::Nodelet">
+    <description>Overlay rear image (PiP) onto front image.</description>
+  </class>
+</library>

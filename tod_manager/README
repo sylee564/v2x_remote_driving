@@ -1,0 +1,12 @@
+sudo apt install -y qtbase5-dev qtdeclarative5-dev \
+  qtwebengine5-dev libqt5webenginewidgets5 qml-module-qtwebengine
+sudo apt-get install libqt5webchannel5 libqt5webchannel5-dev
+
+sudo apt install -y qtbase5-dev qttools5-dev qttools5-dev-tools
+sudo apt install -y libgeographic-dev proj-bin libproj-dev
+
+sudo apt install -y ros-noetic-lanelet2 \
+  ros-noetic-lanelet2-core \
+  ros-noetic-lanelet2-io \
+  ros-noetic-lanelet2-projection \
+  ros-noetic-lanelet2-geometry

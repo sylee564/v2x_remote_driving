@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- ===== Common ===== -->
+  <arg name="isVehicle"  default="true"/>
+
+
+  <!-- ===== Operator basic params ===== -->
+  <arg name="OperatorID"              default="AVG"/>
+  <arg name="maxVelocity_mps"         default="10"/>   <!-- 참고값(로그/호환용); 실제 상한은 gov_v_max_mps 사용 -->
+  <arg name="maxAcceleration_mps2"    default="1"/>    <!-- +a 한계 -->
+  <arg name="maxDeceleration_mps2"    default="3"/>    <!-- -a 한계(양수로; 내부에서 부호 적용) -->
+  <arg name="maxSteeringRate_degps"   default="150"/>
+  <arg name="ConstraintSteeringRate"  default="false"/>
+  <arg name="InputDeviceHasSeparateBrakingAxis" default="true"/>
+
+  <!-- ===== Speed Governor ===== -->
+  <arg name="gov_enabled"   default="true"/>
+  <arg name="gov_v_max_mps" default="$(arg maxVelocity_mps)"/>  <!-- 상한 속도는 여기로 일원화 -->
+  <arg name="gov_hyst_mps"  default="0.7"/>
+  <arg name="gov_Kp"        default="1.5"/>
+  <arg name="gov_a_min"     default="-3.0"/>  <!-- m/s^2 -->
+  <arg name="gov_a_max"     default="1.0"/>   <!-- m/s^2 -->
+
+  <!-- ===== Natural Drag / Hold (CommandCreator::DragCfg) ===== -->
+  <arg name="accel_deadzone"        default="0.01"/>
+  <arg name="idle_drag_dec_mps2"    default="0.25"/>  <!-- a0: 무입력 기본 감속 -->
+  <arg name="vel_drag_coeff"        default="0.05"/>  <!-- k: 속도 비례 감속 -->
+  <arg name="min_hold_speed_kph"    default="5.0"/>   <!-- 하한 속도: 5 km/h -->
+  <arg name="hold_speed_eps_mps"    default="0.05"/>  <!-- 하한 근처 여유 -->
+  <arg name="jerk_limit_mps3"       default="0.0"/>   <!-- 0이면 비활성 -->
+
+  <!-- ===================== OPERATOR NODES ===================== -->
+  <group ns="Operator/Control" unless="$(eval isVehicle)">
+    <node name="CommandCreator" pkg="tod_control" type="OperatorCommandCreator" output="screen">
+      <!-- ~ 파라미터: 기본 제어 -->
+      <param name="OperatorID"                 value="$(arg OperatorID)"/>
+      <param name="maxVelocity_mps"            value="$(arg maxVelocity_mps)"/>
+      <param name="maxAcceleration_mps2"       value="$(arg maxAcceleration_mps2)"/>
+      <param name="maxDeceleration_mps2"       value="$(arg maxDeceleration_mps2)"/>
+      <param name="maxSteeringRate_degps"      value="$(arg maxSteeringRate_degps)"/>
+      <param name="ConstraintSteeringRate"     value="$(arg ConstraintSteeringRate)"/>
+      <param name="InputDeviceHasSeparateBrakingAxis" value="$(arg InputDeviceHasSeparateBrakingAxis)"/>
+
+      <!-- ~gov/* : SpeedGovernor 설정 (CommandCreator::gov_params_) -->
+      <param name="gov_enabled"   value="$(arg gov_enabled)"/>
+      <param name="gov_v_max_mps" value="$(arg gov_v_max_mps)"/>
+      <param name="gov_hyst_mps"  value="$(arg gov_hyst_mps)"/>
+      <param name="gov_Kp"        value="$(arg gov_Kp)"/>
+      <param name="gov_a_min"     value="$(arg gov_a_min)"/>
+      <param name="gov_a_max"     value="$(arg gov_a_max)"/>
+
+      <!-- DragCfg: 자연 감속 + 하한 속도 유지 (5 km/h) -->
+      <param name="accel_deadzone"      value="$(arg accel_deadzone)"/>
+      <param name="idle_drag_dec_mps2"  value="$(arg idle_drag_dec_mps2)"/>
+      <param name="vel_drag_coeff"      value="$(arg vel_drag_coeff)"/>
+      <param name="min_hold_speed_kph"  value="$(arg min_hold_speed_kph)"/>
+      <param name="hold_speed_eps_mps"  value="$(arg hold_speed_eps_mps)"/>
+      <param name="jerk_limit_mps3"     value="$(arg jerk_limit_mps3)"/>
+    </node>
+
+    <node name="ForceFeedbackController" pkg="tod_control" type="ForceFeedbackController" output="screen">
+      <param name="loop_hz"              value="100.0"/>
+      <param name="max_output"           value="0.8"/>
+      <param name="vehicle_topic"        value="/Operator/kona/probe_vehicle_data"/>
+      <param name="joy_topic"            value="/Operator/InputDevices/joystick"/>
+      <param name="ff_topic"             value="/Operator/Control/force_feedback"/>
+      <param name="vehicle_data_timeout" value="0.5"/>  <!-- s -->
+
+      <!-- PI 게인 -->
+      <param name="Kp" value="0.5"/>
+      <param name="Ki" value="0.0"/>
+
+      <!-- 오토 센터링 -->
+      <param name="auto_centering"              value="true"/>
+      <param name="eps"                         value="0.01"/>  <!-- rad -->
+      <param name="min_torque"                  value="0.2"/>
+      <param name="auto_centering_max_torque"   value="0.6"/>
+      <param name="auto_centering_max_position" value="0.25"/>  <!-- rad -->
+
+      <!-- 조이스틱 정규화 → 라디안 스케일 -->
+      <param name="max_swa_rad" value="0.52"/>  <!-- ≈30° -->
+    </node>
+
+    <node name="OperatorControlCommandSender" pkg="tod_control" type="OperatorControlCommandSender" output="screen">
+      <param name="client_id_prefix" value="operator_control"/>
+      <param name="broker_ip" value="220.90.18.52"/>
+      <param name="broker_port" value="1883"/>
+    </node>
+  </group>
+
+  <!-- ===================== VEHICLE NODES ===================== -->
+  <group ns="Vehicle/Control" if="$(eval isVehicle)">
+    <node name="ControlCommandReceiver" pkg="tod_control" type="ControlCmdReceiver" output="screen" respawn="true">
+      <param name="status_topic"      value="/Vehicle/Manager/tod_status"/>
+      <param name="control_cmd_topic" value="/Vehicle/Control/control_cmd_data"/>
+      <param name="mqtt_topic"        value="Vehicle/Control/control_cmd_data"/>
+      <param name="broker_ip"         value="220.90.18.50"/>
+      <param name="broker_port"       value="1883"/>
+    </node>
+  </group>
+
+</launch>

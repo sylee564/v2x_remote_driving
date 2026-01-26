@@ -1,0 +1,39 @@
+<launch>
+  <!-- 입력 토픽 -->
+  <!-- <arg name="img"   default="/camera/image_raw"/>
+  <arg name="info"  default="/camera/camera_info"/> -->
+  <arg name="img"   default="/v4l/camera/image_raw"/>
+  <arg name="info"  default="/v4l/camera/camera_info"/>
+
+  <!-- 인코더 옵션 -->
+  <arg name="codec"        default="h264"/>        <!-- h264 | h265 -->
+  <arg name="bitrate_bps"  default="2500000"/>     <!-- 2.5 Mbps -->
+  <arg name="gop"          default="30"/>          <!-- GOP ~= fps -->
+  <arg name="mode"         default="auto"/>        <!-- auto | cpu | hw -->
+  <arg name="fps_hint"     default="30"/>          <!-- caps 협상용 힌트 -->
+  <arg name="fps_mode"     default="nominal"/>     <!-- nominal | measured -->
+  <arg name="fps_nominal"  default="30"/>          <!-- EncodedFrame용 명세 FPS -->
+  <arg name="out"          default=""/>            <!-- 비우면 encoded/<codec> 로 결정 -->
+
+  <node pkg="h26x_encoder" type="h26x_encoder_node" name="front_encoder" output="screen">
+    <!-- 입력 -->
+    <param name="input_topic"       value="$(arg img)"/>
+    <param name="camera_info_topic" value="$(arg info)"/>
+
+    <!-- 코덱/레이트 -->
+    <param name="codec"             value="$(arg codec)"/>
+    <param name="bitrate_bps"       value="$(arg bitrate_bps)"/>
+    <param name="gop"               value="$(arg gop)"/>
+
+    <!-- 실행 모드 -->
+    <param name="mode"              value="$(arg mode)"/>
+
+    <!-- FPS 정책 -->
+    <param name="fps_hint"          value="$(arg fps_hint)"/>
+    <param name="fps_mode"          value="$(arg fps_mode)"/>
+    <param name="fps_nominal"       value="$(arg fps_nominal)"/>
+
+    <!-- 출력 토픽(비우면 encoded/<codec>) -->
+    <param name="output_topic"      value="$(arg out)"/>
+  </node>
+</launch>

@@ -1,0 +1,29 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/team1/mark_dir/novatel_ws/devel/lib/python2.7/dist-packages",
+        "/home/team1/catkin_ws_rs/devel/lib/python2.7/dist-packages",
+        "/home/team1/pix_ros/devel/lib/python2.7/dist-packages",
+        "/home/team1/pixcan/devel/lib/python2.7/dist-packages",
+        "/home/team1/autoware-bleeding/install/vector_map_server/lib/python2.7/dist-packages",
+        "/home/team1/autoware-bleeding/install/vector_map_msgs/lib/python2.7/dist-packages",
+        "/home/team1/autoware-bleeding/install/tablet_socket_msgs/lib/python2.7/dist-packages",
+        "/home/team1/autoware-bleeding/install/sick_ldmrs_driver/lib/python2.7/dist-packages",
+        "/home/team1/autoware-bleeding/install/sick_ldmrs_msgs/lib/python2.7/dist-packages",
+        "/home/team1/autoware-bleeding/install/points_downsampler/lib/python2.7/dist-packages",
+        "/home/team1/autoware-bleeding/install/lgsvl_simulator_bridge/lib/python2.7/dist-packages",
+        "/home/team1/autoware-bleeding/install/kitti_player/lib/python2.7/dist-packages",
+        "/home/team1/autoware-bleeding/install/javad_navsat_driver/lib/python2.7/dist-packages",
+        "/home/team1/autoware-bleeding/install/ds4_msgs/lib/python2.7/dist-packages",
+        "/home/team1/autoware-bleeding/install/custom_msgs/lib/python2.7/dist-packages",
+        "/home/team1/autoware-bleeding/install/carla_autoware_bridge/lib/python2.7/dist-packages",
+        "/home/team1/autoware-bleeding/install/autoware_system_msgs/lib/python2.7/dist-packages",
+        "/home/team1/autoware-bleeding/install/autoware_camera_lidar_calibrator/lib/python2.7/dist-packages",
+        "/home/team1/autoware-bleeding/install/autoware_msgs/lib/python2.7/dist-packages",
+        "/home/team1/autoware-bleeding/install/autoware_map_msgs/lib/python2.7/dist-packages",
+        "/home/team1/autoware-bleeding/install/autoware_launcher/lib/python2.7/dist-packages",
+        "/home/team1/autoware-bleeding/install/autoware_lanelet2_msgs/lib/python2.7/dist-packages",
+        "/home/team1/autoware-bleeding/install/autoware_config_msgs/lib/python2.7/dist-packages",
+        "/home/team1/autoware-bleeding/install/autoware_can_msgs/lib/python2.7/dist-packages",
+        "/opt/ros/melodic/lib/python2.7/dist-packages"
+    ]
+}

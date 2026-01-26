@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<library path="lib/libgscam_cuda_pip_nodelets">
+  <class
+    name="gscam_cuda_pip/GscamCudaPipNodelet"
+    type="gscam_cuda_pip::GscamCudaPipNodelet"
+    base_class_type="nodelet::Nodelet">
+    <description>GStreamer + CUDA PiP camera nodelet</description>
+  </class>
+</library>

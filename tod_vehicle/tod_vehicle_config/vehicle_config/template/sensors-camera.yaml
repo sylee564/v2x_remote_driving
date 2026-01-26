@@ -1,0 +1,36 @@
+# name: expected to be used consistent in transform tree, topics, etc.
+#       for each camera calibration file needs to be provided
+#       in camera-calibration/
+# is_fisheye: true (expecting ROS camera calibration results),
+#             false (xpecting ocam toolbox calibration results)
+
+# OPTIONAL:
+# stream_on_connect: true (default)/false
+# project_on: false (default)/true        (currently only supported for non is_fisheye)
+# is_jpeg: false (default)/true
+# scalings: [1p000]                       (default - for video quality models)
+# transition_bitrates: [10000]            (default - for video quality models)
+# camera_topics_namespace: /Vehicle/Video (default)
+# camera_image_name: /image_raw           (default)
+# vehicle_name: /camera_front             if camera names differ on vehicle and operator side, instead
+# operator_name: /CameraFrontCenter       of specifying "name", individual names can be used
+#                                         (Dont specify "name" in this case)
+# ip_offset: 19                           If vehicle ip is 192.168.126.1 -> RTSP stream will in this case
+#                                         be accessed from 192.168.126.19
+# host: sensor_ecu                        Will only start if Hostname of current ECU equals "host"
+
+
+camera0:
+  name: /CameraFrontCenter
+  is_fisheye: false
+  stream_on_connect: true
+  project_on: true
+  scalings: [0p500, 1p000]
+  transition_bitrates: [5000, 10000]
+
+camera1:
+  name: /CameraTopViewFront
+  is_fisheye: true
+
+camera_topics_namespace: /Vehicle/Video
+camera_image_name: /image_raw

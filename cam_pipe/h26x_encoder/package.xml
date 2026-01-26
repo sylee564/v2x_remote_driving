@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>h26x_encoder</name>
+  <version>0.1.0</version>
+  <description>ROS1 H.264/H.265 encoder node (gstreamer) that subscribes Image and publishes EncodedFrame</description>
+
+  <maintainer email="sylee@avgenius.kr">avg</maintainer>
+
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>message_generation</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>cv_bridge</build_depend>
+  <build_depend>image_transport</build_depend>
+  <build_depend>nodelet</build_depend>
+
+  <exec_depend>message_runtime</exec_depend>
+  <exec_depend>roscpp</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>cv_bridge</exec_depend>
+  <exec_depend>image_transport</exec_depend>
+  <exec_depend>nodelet</exec_depend>
+
+  <export>
+    <nodelet plugin="${prefix}/nodelet_plugins.xml"/>
+  </export>
+
+</package>

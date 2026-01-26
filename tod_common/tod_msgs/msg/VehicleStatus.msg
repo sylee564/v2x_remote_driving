@@ -1,0 +1,8 @@
+std_msgs/Header vehicle_header
+uint8 vehicle_emergency_stop_released
+uint8 vehicle_lat_control_status      
+uint8 vehicle_lon_control_status
+uint8 vehicle_streaming_status
+uint8 vehicle_v2x_connected_status
+
+uint8 vehicle_nav_status

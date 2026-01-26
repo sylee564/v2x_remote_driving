@@ -1,0 +1,23 @@
+# cfg/calib.yaml
+image_topic: "/front/camera/image_raw"
+
+board:
+  cols: 9
+  rows: 6
+  square_size_m: 0.04
+
+capture:
+  target_frames: 40
+  timeout_sec: 180
+  min_span_ratio: 0.25
+  show_preview: true
+
+# 기본 모델은 rational(와이드 100~140° 권장)
+model: "rational"
+
+output:
+  camera_name: "camera"
+  save_dir: "/home/lsy/ros_image_calib"
+
+# 디버그 퍼블리시 (raw/corners/undist 토픽 출력)
+debug: true

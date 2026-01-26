@@ -1,0 +1,43 @@
+<launch>
+
+  <arg name="format"  default="UYVY"/>
+  <arg name="width"  default="1280"/>
+  <arg name="height" default="720"/>
+  <arg name="fps"    default="30/1"/>
+
+  <include file="$(find nru_cameras)/launch/single_cam_nodelet.launch">
+    <arg name="ns" value="front"/>
+    <arg name="device" value="/dev/video0"/>
+    <arg name="format" value="$(arg format)"/>
+    <arg name="width" value="$(arg width)"/>
+    <arg name="height" value="$(arg height)"/>
+    <arg name="fps" value="$(arg fps)"/>
+  </include>
+
+  <include file="$(find nru_cameras)/launch/single_cam_nodelet.launch">
+    <arg name="ns" value="left"/>
+    <arg name="device" value="/dev/video1"/>
+    <arg name="format" value="$(arg format)"/>
+    <arg name="width" value="$(arg width)"/>
+    <arg name="height" value="$(arg height)"/>
+    <arg name="fps" value="$(arg fps)"/>
+  </include>
+
+  <include file="$(find nru_cameras)/launch/single_cam_nodelet.launch">
+    <arg name="ns" value="right"/>
+    <arg name="device" value="/dev/video2"/>
+    <arg name="format" value="$(arg format)"/>
+    <arg name="width" value="$(arg width)"/>
+    <arg name="height" value="$(arg height)"/>
+    <arg name="fps" value="$(arg fps)"/>
+  </include>
+
+  <include file="$(find nru_cameras)/launch/single_cam_nodelet.launch">
+    <arg name="ns" value="rear"/>
+    <arg name="device" value="/dev/video3"/>
+    <arg name="format" value="$(arg format)"/>
+    <arg name="width" value="$(arg width)"/>
+    <arg name="height" value="$(arg height)"/>
+    <arg name="fps" value="$(arg fps)"/>
+  </include>
+</launch>

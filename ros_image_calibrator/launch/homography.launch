@@ -1,0 +1,5 @@
+<launch>
+  <rosparam file="$(find ros_image_calibrator)/cfg/avm.yaml" command="load"/>
+  <node pkg="ros_image_calibrator" type="avm_homography_from_topic.py"
+        name="avm_homography_from_topic" output="screen"/>
+</launch>

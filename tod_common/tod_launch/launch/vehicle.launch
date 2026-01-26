@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="vehicleName" default="kona"/> 
+    <arg name="vehicleNum" default="123a4567"/>
+    <arg name="vehicleType" default="4"/>
+    <arg name="isVehicle" default="true"/>
+
+    <!-- Common -->
+
+    <include file="$(find tod_vehicle_bridge)/launch/tod_vehicle_bridge.launch">
+        <arg name="vehicleName" value="$(arg vehicleName)"/>
+        <arg name="vehicleNum" value="$(arg vehicleNum)"/>
+        <arg name="vehicleType" value="$(arg vehicleType)"/>
+    </include>
+
+    <include file="$(find nru_cameras)/launch/tod_multi_cam_nodelet.launch"/>
+
+    <include file="$(find tod_manager)/launch/tod_manager.launch">
+        <arg name="isVehicle" value="$(arg isVehicle)"/>
+    </include>
+
+    <include file="$(find nr_v2x_interface)/launch/nr_v2x_interface.launch">
+        <arg name="isVehicle" value="$(arg isVehicle)"/>
+    </include>
+
+    <include file="$(find tod_control)/launch/tod_control.launch">
+        <arg name="isVehicle" value="$(arg isVehicle)"/>
+    </include> 
+
+</launch>

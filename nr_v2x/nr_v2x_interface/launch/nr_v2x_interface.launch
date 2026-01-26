@@ -1,0 +1,113 @@
+<launch>
+  <!-- ===== Launch args ===== -->
+  <!-- 모드: true=차량(Probe TX, 영상 TX) / false=관제(영상 RX) -->
+  <arg name="isVehicle"        default="false"/>
+
+  <!-- 프로토콜 버전 -->
+  <arg name="overall_version"  default="v2"/>            <!-- v1 | v2 -->
+
+  <!-- 확장 프레임 공통 헤더 -->
+  <arg name="psid_ext"         default="58201"/>
+  <arg name="cast_mode"        default="0"/>
+  <arg name="src_id"           default="0"/>
+  <arg name="dst_id"           default="0"/>
+
+  <!-- DB_V2X (SSOV) 메타데이터 -->
+  <arg name="db_eDeviceType"    default="1"/>   <!-- OBU=1, RSU=2 -->
+  <arg name="db_eTeleCommType"  default="2"/>   <!-- LTE=1, 5G PC5=2 -->
+  <arg name="db_unDeviceId"     default="1001"/>
+  <arg name="db_eServiceId"     default="2"/>   <!-- SENSOR_SHARING=2 -->
+  <arg name="db_eActionType"    default="1"/>   <!-- REQUEST=1 / RESPONSE=2 -->
+  <arg name="db_eRegionId"      default="1"/>
+  <arg name="db_ePayloadType"   default="11"/>  <!-- 0x000B -->
+  <arg name="db_eCommId"        default="1"/>   <!-- V2V=1 -->
+  <arg name="db_usDbVer"        default="1"/>
+  <arg name="db_usHwVer"        default="0"/>
+  <arg name="db_usSwVer"        default="0"/>
+
+  <!-- 비디오 TX(차량측) -->
+  <arg name="video_frag_bytes"  default="1200"/>  <!-- 조각 payload 바이트(>=256 권장) -->
+  <arg name="video_pacing_us"   default="200"/>   <!-- 조각 간 페이싱(µs; 0이면 최대 속도) -->
+
+  <!-- 토픽 이름(송신 입력 / 수신 출력) - 코드 기본값과 일치 -->
+  <arg name="topic_video_front" default="/front/encoded/h264"/>
+  <arg name="topic_video_left"  default="/left/encoded/h264"/>
+  <arg name="topic_video_right" default="/right/encoded/h264"/>
+  <arg name="topic_video_avm" default="/avm/encoded/h264"/>
+
+  <arg name="rx_topic_video_front" default="rx/center/encoded/h26x"/>
+  <arg name="rx_topic_video_left"  default="rx/left/encoded/h26x"/>
+  <arg name="rx_topic_video_right" default="rx/right/encoded/h26x"/>
+  <arg name="rx_topic_video_avm" default="rx/avm/encoded/h26x"/>
+
+  <!-- 내부 스레드/타이밍 -->
+  <arg name="io_threads"       default="8"/>     <!-- boost::asio io_context.run() 스레드 수 -->
+  <arg name="build_threads"    default="4"/>     <!-- (예약) 패킷 빌드용 thread_pool 개수 -->
+  <arg name="debug_rx_raw"     default="false"/> <!-- v2x/rx_raw 디버그 패킷 퍼블리시 -->
+
+  <!-- (옵션) 노드 내부에서 사용 시 -->
+  <!-- <arg name="spinner_threads"  default="4"/> -->
+
+  <!-- ===== Node ===== -->
+  <node pkg="nr_v2x_interface" type="v2x_interface_node" name="nr_v2x_interface" output="screen">
+
+    <!-- 모드/버전 -->
+    <param name="isVehicle"        value="$(arg isVehicle)"/>
+    <param name="overall_version"  value="$(arg overall_version)"/>
+
+    <!-- 헤더 공통 -->
+    <param name="psid_ext"         value="$(arg psid_ext)"/>
+    <param name="cast_mode"        value="$(arg cast_mode)"/>
+    <param name="src_id"           value="$(arg src_id)"/>
+    <param name="dst_id"           value="$(arg dst_id)"/>
+
+    <!-- DB_V2X 메타 -->
+    <param name="db_eDeviceType"    value="$(arg db_eDeviceType)"/>
+    <param name="db_eTeleCommType"  value="$(arg db_eTeleCommType)"/>
+    <param name="db_unDeviceId"     value="$(arg db_unDeviceId)"/>
+    <param name="db_eServiceId"     value="$(arg db_eServiceId)"/>
+    <param name="db_eActionType"    value="$(arg db_eActionType)"/>
+    <param name="db_eRegionId"      value="$(arg db_eRegionId)"/>
+    <param name="db_ePayloadType"   value="$(arg db_ePayloadType)"/>
+    <param name="db_eCommId"        value="$(arg db_eCommId)"/>
+    <param name="db_usDbVer"        value="$(arg db_usDbVer)"/>
+    <param name="db_usHwVer"        value="$(arg db_usHwVer)"/>
+    <param name="db_usSwVer"        value="$(arg db_usSwVer)"/>
+
+    <!-- 비디오 TX(차량 모드에서 사용) -->
+    <param name="video_frag_bytes"  value="$(arg video_frag_bytes)"/>
+    <param name="video_pacing_us"   value="$(arg video_pacing_us)"/>
+
+    <!-- 토픽 이름 -->
+    <param name="topic_video_front" value="$(arg topic_video_front)"/>
+    <param name="topic_video_left"  value="$(arg topic_video_left)"/>
+    <param name="topic_video_right" value="$(arg topic_video_right)"/>
+    <param name="topic_video_avm" value="$(arg topic_video_avm)"/>
+
+    <!-- 수신(관제) 측 스트림별 출력 토픽 -->
+    <param name="rx_topic_video_front" value="$(arg rx_topic_video_front)"/>
+    <param name="rx_topic_video_left"  value="$(arg rx_topic_video_left)"/>
+    <param name="rx_topic_video_right" value="$(arg rx_topic_video_right)"/>
+    <param name="rx_topic_video_avm" value="$(arg rx_topic_video_avm)"/>
+
+    <!-- 내부 스레드/타이밍 -->
+    <param name="io_threads"       value="$(arg io_threads)"/>
+    <param name="build_threads"    value="$(arg build_threads)"/>
+    <param name="debug_rx_raw"     value="$(arg debug_rx_raw)"/>
+
+    <!-- (옵션) AsyncSpinner -->
+    <!-- <param name="spinner_threads"  value="$(arg spinner_threads)"/> -->
+
+    <!-- 필요 시 토픽 리맵 예시 -->
+    <!-- <remap from="control_cmd_data"   to="/Vehicle/Control/control_cmd_data"/> -->
+    <remap from="probe_vehicle_data" to="/Operator/kona/probe_vehicle_data"/>
+  </node>
+
+  <!-- ===== 사용 팁 =====
+    # 차량(송신) 모드
+    # roslaunch nr_v2x_interface v2x_interface.launch isVehicle:=true overall_version:=v2
+
+    # 관제(수신) 모드 + 디버그 RAW 보기
+    # roslaunch nr_v2x_interface v2x_interface.launch isVehicle:=false debug_rx_raw:=true
+  -->
+</launch>

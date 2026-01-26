@@ -1,0 +1,7 @@
+<library path="lib/libh26x_encoder_nodelet">
+  <class name="h26x_encoder/H26xEncoderNodelet"
+         type="encoder::H26xEncoderNodelet"
+         base_class_type="nodelet::Nodelet">
+    <description>H.26x encoder nodelet (wraps H26xEncoderNode)</description>
+  </class>
+</library>

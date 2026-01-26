@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>tod_vehicle_bridge</name>
+  <version>0.1.0</version>
+  <description>Encoder/decoder and control/probe node for Kona CAN bridge (with speed governor and EPS steering-rate support).</description>
+
+  <maintainer email="lsy@todo.todo">lsy</maintainer>
+  <!-- 실제 라이선스로 교체하세요 -->
+  <license>BSD-3-Clause</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>roscpp</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>tf</build_depend>
+  <build_depend>tod_helper</build_depend>
+  <build_depend>tod_msgs</build_depend>
+  <build_depend>kona_driver_msgs</build_depend>
+
+
+  <build_export_depend>roscpp</build_export_depend>
+  <build_export_depend>std_msgs</build_export_depend>
+  <build_export_depend>sensor_msgs</build_export_depend>
+  <build_export_depend>geometry_msgs</build_export_depend>
+  <build_export_depend>tf</build_export_depend>
+  <build_export_depend>tod_helper</build_export_depend>
+  <build_export_depend>tod_msgs</build_export_depend>
+  <build_export_depend>kona_driver_msgs</build_export_depend>
+
+  <exec_depend>roscpp</exec_depend>
+
+  <!-- The export tag contains other, unspecified, tags -->
+  <export>
+    <!-- Other tools can request additional information be placed here -->
+
+  </export>
+</package>

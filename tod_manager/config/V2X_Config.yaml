@@ -1,0 +1,103 @@
+ConfigNodes:
+  - IpAddress
+  - Port
+  - DeviceType
+  - TelecomType
+  - ServiceID
+  - ActionType
+  - RegionID
+  - CommunicationID
+  - PayloadType
+  - PSID
+
+IpAddress:
+  - "192.168.1.12"
+  - "172.21.1.123"
+  - "192.168.1.11"
+  - "192.168.1.10"
+  
+Port:
+  - 47347
+  - 47348
+  
+DeviceType:
+  0: "UNKNOWN"
+  1: "OBU"
+  2: "RSU"
+  3: "Center"
+
+TelecomType:
+  0: "UNKNOWN"
+  1: "4G(LTE)"
+  20: "5G-uu"
+  30: "5G-PC5"
+  31: "5G-PC5_BROADCAST"
+  32: "5G-PC5_UNICAST"
+  33: "5G-PC5_MULTICAST"
+  34: "5G-PC5_GROUPCAST"
+  40: "6G"
+  
+ServiceID:
+  0: "UNKNOWN"
+  1: "Platooning"
+  2: "Sensor Sharing"
+  3: "Remote Driving"
+  4: "Advanced Driving"
+  
+ActionType:
+  0: "UNKNOWN"
+  1: "Request"
+  2: "Response"
+
+RegionID:
+  0: "UNKNOWN"
+  1: "Seoul"
+  2: "Sejong"
+  3: "Busan"
+  4: "Deageon"
+  5: "Incheon"
+  6: "Daegu"
+  7: "Daegu KIAPI"
+  8: "Cheongju"
+  9: "Seongnam"
+
+CommunicationID:
+  0: "UNKNOWN"
+  1: "V2V"
+  2: "V2I"
+  3: "V2P"
+  4: "V2N" 
+  5: "I2V"
+  6: "I2P"
+  7: "I2N"
+  8: "P2V"
+  9: "P2I"
+  10: "P2N"
+  11: "N2V"
+  12: "N2I"
+  13: "N2P"
+
+PayloadType:
+  0: "UNKNOWN"
+  1: "J2735-BSM"
+  2: "J2735-PVD"
+  3: "J2735-PSM"
+  4: "J2735-SPat"
+  5: "J2735-MAP"
+  6: "J2735-TIM"
+  7: "J2735-RSA"
+  8: "J3224-SDSM"
+  101: "other-standard"
+  201: "platooning"
+  301: "Sensor Sharing"
+  401: "Remote Driving"
+  501: "Advanced Driving"
+
+PSID:
+  58200: "EM_V2V_MSG"
+  58201: "EM_V2I_MSG"
+  58202: "EM_I2V_MSG"
+  # 58220: "EM_PT_OVERALL"
+  # 58221: "EM_PT_RAW_DATA"
+  # 58222: "EM_PT_SSOV"
+  # 58223: "EM_PT_STATUS"

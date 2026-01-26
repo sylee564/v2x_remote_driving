@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>tod_manager</name>
+  <version>0.1.0</version>
+  <description>
+    V2X Teleoperation Manager GUI (Qt5 + ROS1).  
+  </description>
+
+  <maintainer email="you@example.com">lsy</maintainer>
+  <author email="you@example.com">lsy</author>
+  <license>BSD-3-Clause</license>
+  <url type="website">https://example.com/tod_manager</url>
+
+  <!-- Build system -->
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <!-- ROS package deps -->
+  <build_depend>roscpp</build_depend>
+  <build_depend>roslib</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>tod_msgs</build_depend>
+  <build_depend>tod_core</build_depend>
+  <build_depend>tod_helper</build_depend>
+  <build_depend>nr_v2x_msgs</build_depend>
+  <build_depend>tcpip_msgs</build_depend>
+  <build_depend>kona_driver_msgs</build_depend>
+  <build_depend>lanelet2_core</build_depend>
+  <build_depend>lanelet2_io</build_depend>
+  <build_depend>lanelet2_projection</build_depend>
+
+  <exec_depend>roscpp</exec_depend>
+  <exec_depend>roslib</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>tod_msgs</exec_depend>
+  <exec_depend>tod_core</exec_depend>
+  <exec_depend>tod_helper</exec_depend>
+  <exec_depend>nr_v2x_msgs</exec_depend>
+  <exec_depend>tcpip_msgs</exec_depend>
+  <exec_depend>kona_driver_msgs</exec_depend>
+  <exec_depend>lanelet2_core</exec_depend>
+  <exec_depend>lanelet2_io</exec_depend>
+  <exec_depend>lanelet2_projection</exec_depend>
+
+  <!-- System/Qt deps (rosdep가 우분투에서 해결) -->
+  <build_depend>qtbase5-dev</build_depend>
+  <build_depend>qtwebengine5-dev</build_depend>
+  <build_depend>qtwebchannel5-dev</build_depend>
+
+  <exec_depend>qtbase5-dev</exec_depend>
+  <exec_depend>qtwebengine5-dev</exec_depend>
+  <exec_depend>qtwebchannel5-dev</exec_depend>
+
+  <!-- Optional: for runtime plugin discovery etc. -->
+  <export>
+    <!-- nothing to export -->
+  </export>
+</package>

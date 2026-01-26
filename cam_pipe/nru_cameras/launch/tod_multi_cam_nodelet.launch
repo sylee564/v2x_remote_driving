@@ -1,0 +1,7 @@
+<launch>
+
+  <include file="$(find nru_cameras)/launch/tod_front_cam_nodelet.launch"/>
+  <include file="$(find nru_cameras)/launch/tod_left_cam_nodelet.launch"/>
+  <include file="$(find nru_cameras)/launch/tod_right_cam_nodelet.launch"/>
+  <include file="$(find nru_cameras)/launch/tod_rear_cam_nodelet.launch"/>
+</launch>

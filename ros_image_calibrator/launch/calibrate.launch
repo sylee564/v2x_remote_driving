@@ -1,0 +1,70 @@
+<!-- launch/calibrate.launch -->
+<launch>
+  <!-- ===== args ===== -->
+  <arg name="image_topic"     default="/left_wide/camera/image_raw"/>
+  <arg name="model"           default="fisheye"/>  <!-- fisheye | pinhole | rational -->
+  <arg name="camera_name"     default="left_wide"/>
+  <arg name="save_dir"        default="/home/nvidia/camera_calib"/>
+
+  <arg name="use_sb_detector" default="false"/> 
+  <arg name="show_candidates" default="true"/>
+
+  <!-- 체커보드 -->
+  <arg name="cols"            default="8"/>
+  <arg name="rows"            default="6"/>
+  <arg name="square_size_m"   default="0.025"/>
+
+  <!-- 수집 -->
+  <arg name="target_frames"   default="100"/>
+  <arg name="timeout_sec"     default="180"/>
+  <arg name="min_span_ratio"  default="0.4"/>
+  <arg name="show_preview"    default="true"/>
+
+  <!-- 디버그 퍼블리시 on/off -->
+  <arg name="debug"           default="true"/>
+
+  <arg name="grid_w" default="3"/>
+  <arg name="grid_h" default="3"/>
+  <arg name="rot_bins" default="6"/>
+  <arg name="quota_grid" default="1"/>
+  <arg name="quota_scale" default="6"/>
+  <arg name="quota_rot" default="6"/>
+  <arg name="scale_edge_lo" default="0.22"/>
+  <arg name="scale_edge_hi" default="0.42"/>
+
+  <!-- 기본 cfg 로드 -->
+  <rosparam file="$(find ros_image_calibrator)/cfg/calib.yaml" command="load"/>
+
+  <!-- 전역 파라미터 덮어쓰기 -->
+
+  <param name="/use_sb_detector"           value="$(arg use_sb_detector)"/>
+  <param name="/show_candidates"           value="$(arg show_candidates)"/>
+  <param name="/model"                     value="$(arg model)"/>
+  <param name="/board/cols"                value="$(arg cols)"/>
+  <param name="/board/rows"                value="$(arg rows)"/>
+  <param name="/board/square_size_m"       value="$(arg square_size_m)"/>
+  <param name="/capture/target_frames"     value="$(arg target_frames)"/>
+  <param name="/capture/timeout_sec"       value="$(arg timeout_sec)"/>
+  <param name="/capture/min_span_ratio"    value="$(arg min_span_ratio)"/>
+  <param name="/capture/show_preview"      value="$(arg show_preview)"/>
+  <param name="/output/camera_name"        value="$(arg camera_name)"/>
+  <param name="/output/save_dir"           value="$(arg save_dir)"/>
+  <param name="/debug"                     value="$(arg debug)"/>
+
+  <!-- 노드 실행 (개인 파라미터로 토픽 지정) -->
+  <node pkg="ros_image_calibrator"
+        type="image_calibrator.py"
+        name="image_calibrator"
+        output="screen">
+    <param name="image_topic" value="$(arg image_topic)"/>
+
+    <param name="grid_w" value="$(arg grid_w)"/>
+    <param name="grid_h" value="$(arg grid_h)"/>
+    <param name="rot_bins" value="$(arg rot_bins)"/>
+    <param name="quota_grid" value="$(arg quota_grid)"/>
+    <param name="quota_scale" value="$(arg quota_scale)"/>
+    <param name="quota_rot" value="$(arg quota_rot)"/>
+    <param name="scale_edge_lo" value="$(arg scale_edge_lo)"/>
+    <param name="scale_edge_hi" value="$(arg scale_edge_hi)"/>
+  </node>
+</launch>

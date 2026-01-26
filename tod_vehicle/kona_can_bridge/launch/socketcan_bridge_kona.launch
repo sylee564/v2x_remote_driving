@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="can_device"   default="can0"/>
+  <arg name="rx_topic"     default="can/rx"/>
+  <arg name="tx_topic"     default="can/tx"/>
+  <arg name="rx_queue"     default="100"/>
+  <arg name="filters_yaml" default="$(find kona_can_bridge)/config/socketcan_filters.yaml"/>
+
+  <node pkg="socketcan_bridge" type="socketcan_bridge_node" name="socketcan_bridge" output="screen">
+    <!-- 디바이스와 큐 사이즈 -->
+    <param name="can_device" value="$(arg can_device)"/>
+    <param name="received_messages_queue_size" value="$(arg rx_queue)"/>
+
+    <!-- 토픽 리맵: 브리지 기본 토픽명을 너의 기대 토픽명으로 바꿔줌 -->
+    <!-- (포크에 따라 기본명이 /received_messages,/sent_messages 또는 /rx,/tx 일 수 있음) -->
+    <remap from="received_messages" to="$(arg rx_topic)"/>
+    <remap from="sent_messages"     to="$(arg tx_topic)"/>
+
+    <!-- CAN ID 필터 로드: 파일에 can_ids: [0x710, 0x711, ...] 형식 -->
+    <rosparam command="load" file="$(arg filters_yaml)"/>
+  </node>
+</launch>

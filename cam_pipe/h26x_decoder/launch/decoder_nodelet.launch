@@ -1,0 +1,16 @@
+<launch>
+  <arg name="in"   default="/front/encoded/h264"/>
+  <arg name="out"  default="/front/decoded/image"/>
+
+  <node pkg="nodelet" type="nodelet" name="dec_mgr" args="manager" output="screen"/>
+
+  <node pkg="nodelet" type="nodelet" name="decoder"
+        args="load h26x_decoder/H26xDecoderNodelet dec_mgr" output="screen">
+    <param name="input_topic"  value="$(arg in)"/>
+    <param name="output_topic" value="$(arg out)"/>
+    <param name="codec"        value="auto"/>
+    <param name="mode"         value="auto"/>
+    <param name="wait_for_idr" value="true"/>
+    <param name="fps_hint"     value="30"/>
+  </node>
+</launch>

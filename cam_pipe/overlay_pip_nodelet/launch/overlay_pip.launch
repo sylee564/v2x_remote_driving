@@ -1,0 +1,57 @@
+<launch>
+  <!-- (권장) nodelet: 같은 manager에 로드하면 복사 최소화 -->
+  <arg name="use_nodelet" default="false"/>
+  <arg name="ns" default="front"/>
+  <!-- 공용 파라미터 -->
+  <arg name="pip_scale_w" default="0.3"/>
+  <arg name="pip_scale_h" default="0.3"/>
+  <arg name="pip_margin" default="0"/> 
+  <arg name="queue_size" default="1"/>
+  <arg name="bg_dim_alpha" default="0.25"/>
+  <arg name="overlay_alpha" default="0.9"/>
+
+  <arg name="draw_border" default="true"/>
+  <arg name="border_thickness" default="2"/>
+
+  <arg name="control_topic" default="/vehicle/control_cmd"/>
+
+  <!-- 토픽 remap은 호출 측에서 조정 가능 -->
+  <group if="$(arg use_nodelet)">
+    <node pkg="nodelet" type="nodelet" name="front_rear_overlay"
+          args="load overlay_pip_nodelet/OverlayPipNodelet cam_mgr" output="screen">
+      <param name="ns" value="$(arg ns)"/>
+      <param name="pip_scale_w" value="$(arg pip_scale_w)"/>
+      <param name="pip_scale_h" value="(arg pip_scale_h)"/>
+      <param name="pip_margin"  value="(arg pip_margin)"/>
+      <param name="queue_size"  value="(arg queue_size)"/>
+      <param name="bg_dim_alpha"  value="(arg bg_dim_alpha)"/>
+      <param name="overlay_alpha"  value="(arg overlay_alpha)"/>
+
+      <param name="draw_border" value="(arg pip_scale_w)"/>
+      <param name="border_thickness" value="(arg border_thickness)"/>
+      <param name="control_topic" value="/vehicle/control_cmd"/>
+      <remap from="main_image"  to="/front/image_rect"/>
+      <remap from="sub_image"   to="/rear/image_rect"/>
+      <remap from="output_image" to="/overlay/image_out"/>
+    </node>
+  </group>
+
+  <group unless="$(arg use_nodelet)">
+    <node pkg="overlay_pip_nodelet" type="overlay_pip_node" name="overlay_pip_node" output="screen">
+      <param name="ns" value="$(arg ns)"/>
+      <param name="pip_scale_w" value="$(arg pip_scale_w)"/>
+      <param name="pip_scale_h" value="(arg pip_scale_h)"/>
+      <param name="pip_margin"  value="(arg pip_margin)"/>
+      <param name="queue_size"  value="(arg queue_size)"/>
+      <param name="bg_dim_alpha"  value="(arg bg_dim_alpha)"/>
+      <param name="overlay_alpha"  value="(arg overlay_alpha)"/>
+
+      <param name="draw_border" value="(arg pip_scale_w)"/>
+      <param name="border_thickness" value="(arg border_thickness)"/>
+      <param name="control_topic" value="/vehicle/control_cmd"/>
+      <remap from="main_image"  to="/front/image_rect"/>
+      <remap from="sub_image"   to="/rear/image_rect"/>
+      <remap from="output_image" to="/overlay/image_out"/>
+    </node>
+  </group>
+</launch>

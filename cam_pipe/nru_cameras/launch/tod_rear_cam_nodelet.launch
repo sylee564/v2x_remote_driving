@@ -1,0 +1,59 @@
+<launch>
+  <!-- 공통 인자 -->
+  <arg name="ns"       default="rear"/>
+  <arg name="device"   default="/dev/video3"/>
+  <arg name="width"    default="1280"/>
+  <arg name="height"   default="720"/>
+  <arg name="fps"      default="30/1"/>
+  <arg name="format"   default="UYVY"/>
+
+  <!-- PiP (front만 사용) -->
+  <arg name="pip_enable"    default="false"/>
+
+  <!-- 제어 토픽 -->
+  <arg name="control_topic" default="/control_cmd"/>
+
+  <!-- Nodelet 매니저(루트 네임스페이스) -->
+
+
+  <group ns="$(arg ns)">
+
+    <node pkg="nodelet" type="nodelet" name="$(arg ns)_gscam_pip_manager" args="manager" output="screen">
+      <param name="num_worker_threads" value="4"/>
+    </node>
+
+    <node pkg="nodelet" type="nodelet" name="$(arg ns)_cam"
+          args="load gscam_cuda_pip/GscamCudaPipNodelet $(arg ns)_gscam_pip_manager"
+          output="screen">
+      <param name="ns"     value="$(arg ns)"/>
+
+      <!-- 카메라/프레임 -->
+      <param name="camera_info_url" value="file://$(find nru_cameras)/config/$(arg ns).yaml"/>
+      <param name="camera_name"     value="$(arg ns)"/>
+      <param name="frame_id"        value="$(arg ns)_frame"/>
+      <param name="image_encoding"  value="rgb8"/>
+      <param name="use_rectify"     value="true"/>
+
+      <!-- GStreamer: 한 줄! -->
+      <param name="gscam_config"
+             value="nvv4l2camerasrc device=$(arg device) ! video/x-raw(memory:NVMM),width=$(arg width),height=$(arg height),framerate=$(arg fps),format=$(arg format) ! nvvidconv ! video/x-raw,format=BGRx,width=$(arg width),height=$(arg height) ! videoconvert n-threads=2 ! video/x-raw,format=BGR ! queue leaky=downstream max-size-buffers=2 max-size-time=0 max-size-bytes=0"/>
+
+      <param name="sync_sink"          value="true"/>
+      <param name="preroll"            value="false"/>
+      <param name="use_gst_timestamps" value="true"/>
+      <param name="reopen_on_eof"      value="false"/>
+
+      <!-- PiP -->
+      <param name="pip_enable"     value="$(arg pip_enable)"/>
+
+
+      <!-- 토픽 remap -->
+      <remap from="image_raw"     to="camera/image_raw"/>
+      <remap from="image_rect"    to="camera/image_rect"/>
+      <remap from="image_overlay" to="camera/image_overlay"/>
+      <remap from="control_cmd"   to="$(arg control_topic)"/>
+    </node>
+
+  </group>
+
+</launch>

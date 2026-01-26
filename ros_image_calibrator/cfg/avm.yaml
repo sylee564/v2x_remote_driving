@@ -1,0 +1,35 @@
+# 입력
+image_topic: "/camera/image_raw"
+
+# 카메라 모델 및 보정값 (앞 단계에서 생성한 CameraInfo YAML 경로)
+camera_model: "fisheye"     # "fisheye" | "pinhole"
+camera_info_yaml: "/home/avg/ros_image_calib/camera.yaml"
+
+# 체커보드(undistorted 이미지에서 인식)
+board:
+  cols: 9
+  rows: 6
+  square_size_m: 0.04
+
+# 탑뷰 캔버스/좌표 스펙
+birdview:
+  width: 1280
+  height: 1280
+  meters_per_pixel: 0.02
+  center_px: [640, 960]     # (cx, cy) : 차량 중심이 위치할 픽셀
+
+# 보드의 (0,0) 실제좌표를 탑뷰에서 어디로 맵핑할지(미터 단위 오프셋)
+# 예: 보드가 차량 중심 앞쪽으로 0.5m, 왼쪽으로 0.2m 위치하도록 두었다면
+#     offset_m: [ +0.5, +0.2 ] 로 설정 (X=앞(+), Y=좌(+))
+offset_m: [0.0, 0.0]
+
+# 수집
+capture:
+  timeout_sec: 120
+  show_preview: true
+
+# 출력
+output:
+  save_dir: "/home/avg/ros_image_calib/avm"
+  name: "front"                 # H를 식별할 이름(예: front/left/right/rear)
+  avm_yaml_path: "/home/avg/ros_image_calib/avm/avm_result.yaml"

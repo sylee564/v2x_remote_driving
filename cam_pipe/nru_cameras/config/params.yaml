@@ -1,0 +1,7 @@
+width: "1280"
+height: "720"
+fps: "30/1"          # GStreamer fraction 문자열
+use_gst_timestamps: true
+sync_sink: true
+preroll: false
+image_encoding: rgb8  # gscam 내부 appsink에 RGB caps 적용됨

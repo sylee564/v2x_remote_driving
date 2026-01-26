@@ -1,0 +1,13 @@
+[Unit]
+Description=NRU-110V Cameras (gscam nodelets)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=lsy
+Environment=ROS_MASTER_URI=http://localhost:11311
+ExecStart=/bin/bash -lc 'source /opt/ros/noetic/setup.bash && source ~/catkin_ws/devel/setup.bash && roslaunch nru_cameras multi_gmsl_nodelet.launch'
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

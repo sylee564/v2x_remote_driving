@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>gscam_cuda_pip</name>
+  <version>0.3.0</version>
+  <description>
+    GStreamer + CUDA PiP/rectify camera node and nodelet (AGX Xavier / NRU-110V).
+    Main video via GStreamer (v4l2src / nvargus / nvv4l2camerasrc / RTSP),
+    optional PiP from ROS image topic, GPU remap/overlay.
+  </description>
+
+  <maintainer email="you@example.com">Your Name</maintainer>
+  <license>BSD</license>
+
+  <!-- Build system -->
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <!-- ROS deps (build & run) -->
+  <depend>roscpp</depend>
+  <depend>nodelet</depend>
+  <depend>pluginlib</depend>
+  <depend>image_transport</depend>
+  <depend>camera_info_manager</depend>
+  <depend>sensor_msgs</depend>
+  <depend>cv_bridge</depend>
+  <depend>tod_msgs</depend>
+
+  <!-- Runtime system deps (GStreamer) -->
+  <exec_depend>gstreamer1.0-tools</exec_depend>
+  <exec_depend>gstreamer1.0-plugins-base</exec_depend>
+  <exec_depend>gstreamer1.0-plugins-good</exec_depend>
+  <exec_depend>gstreamer1.0-plugins-bad</exec_depend>
+  <exec_depend>gstreamer1.0-libav</exec_depend>
+
+  <!-- Export nodelet plugin manifest -->
+  <export>
+    <!-- nodelet plugin list file installed to ${prefix}/nodelet_plugins.xml -->
+    <nodelet plugin="${prefix}/nodelet_plugins.xml"/>
+  </export>
+</package>

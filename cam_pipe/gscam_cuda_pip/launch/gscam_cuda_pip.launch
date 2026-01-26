@@ -1,0 +1,57 @@
+<launch>
+  <!-- ======== 공통 인자 ======== -->
+  <arg name="node_name" default="gscam_cuda_pip_node"/>
+  <arg name="device"    default="/dev/video0"/>
+  <arg name="width"     default="1280"/>
+  <arg name="height"    default="720"/>
+  <arg name="fps"     default="30/1"/>
+  <arg name="format"  default="UYVY"/>
+
+  <arg name="gscam_config" default="
+    nvv4l2camerasrc device=/dev/video0 !
+    capsfilter caps=video/x-raw(memory:NVMM),width=$(arg width),height=$(arg height),framerate=$(arg fps),format=$(arg format) !
+    nvvidconv !
+    capsfilter caps=video/x-raw,format=(string)BGRx,width=$(arg width),height=$(arg height) !
+    videoconvert n-threads=2 !
+    capsfilter caps=video/x-raw,format=(string)BGR !
+    queue leaky=downstream max-size-buffers=2 max-size-time=0 max-size-bytes=0"/>
+
+  <arg name="pip_enable" default="true"/>
+  <arg name="pip_topic" default="/rear/camera/image_raw"/> <!-- PiP 입력 토픽 -->
+  <arg name="pip_scale_w" default="0.5"/>
+  <arg name="pip_scale_h" default="0.2"/>
+  <arg name="pip_margin"  default="0"/>
+  <arg name="pip_alpha" default="0.9"/>
+  <arg name="bg_dim_alpha" default="0.18"/>
+  <arg name="draw_border" default="true"/>
+  <arg name="border_px" default="2"/>
+  <arg name="pip_position" default="top_center"/>
+
+  <!-- ======== 노드 실행 ======== -->
+  <node pkg="gscam_cuda_pip" type="gscam_cuda_pip_node" name="$(arg node_name)" output="screen">
+    <!-- GStreamer -->
+    <param name="gscam_config" value="$(arg gscam_config)"/>
+    <param name="sync_sink" value="true"/>
+    <param name="preroll" value="false"/>
+    <param name="use_gst_timestamps" value="true"/>
+    <param name="reopen_on_eof" value="false"/>
+
+    <!-- CameraInfo / 프레임 -->
+    <param name="camera_info_url" value="file://$(find nru_cameras)/config/front.yaml"/>
+    <param name="camera_name" value="front"/>
+    <param name="frame_id" value="front_frame"/>
+    <param name="image_encoding" value="rgb8"/>
+    <param name="use_rectify" value="true"/>
+
+    <param name="pip_enable" value="$(arg pip_enable)"/>
+    <param name="pip_topic" value="$(arg pip_topic)"/> <!-- PiP 입력 토픽 -->
+    <param name="pip_scale_w" value="$(arg pip_scale_w)"/>
+    <param name="pip_scale_h" value="$(arg pip_scale_h)"/>
+    <param name="pip_margin"  value="$(arg pip_margin)"/>
+    <param name="pip_alpha" value="$(arg pip_alpha)"/>
+    <param name="bg_dim_alpha" value="$(arg bg_dim_alpha)"/>
+    <param name="draw_border" value="$(arg draw_border)"/>
+    <param name="border_px" value="$(arg border_px)"/>
+    <param name="pip_position" value="$(arg pip_position)"/>
+  </node>
+</launch>

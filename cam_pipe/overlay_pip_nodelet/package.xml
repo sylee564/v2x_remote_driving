@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>overlay_pip_nodelet</name>
+  <version>0.1.0</version>
+  <description>PiP overlay: rear→front 합성 (nodelet + node)</description>
+
+  <maintainer email="you@example.com">you</maintainer>
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>roscpp</build_depend>
+  <build_depend>nodelet</build_depend>
+  <build_depend>pluginlib</build_depend>
+  <build_depend>image_transport</build_depend>
+  <build_depend>cv_bridge</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>tod_msgs</build_depend>
+
+  <exec_depend>roscpp</exec_depend>
+  <exec_depend>nodelet</exec_depend>
+  <exec_depend>pluginlib</exec_depend>
+  <exec_depend>image_transport</exec_depend>
+  <exec_depend>cv_bridge</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>tod_msgs</exec_depend>
+
+  <export>
+    <nodelet plugin="${prefix}/plugins.xml"/>
+  </export>
+</package>

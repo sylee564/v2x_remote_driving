@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<launch> 
+  <arg name="isVehicle" default="true"/>
+  <arg name="ns"           default="Vehicle/kona/interface"/>
+  <!-- 차량 메타 -->
+  <arg name="vehicleName" default="kona"/>
+  <arg name="vehicleNum"  default="123a4567"/>
+  <arg name="vehicleType" default="4"/>
+
+
+  <!-- 토픽 기본값 (필요시 리맵) -->
+  <arg name="control_cmd_topic"     default="/Vehicle/Control/control_cmd_data"/>
+  <arg name="primary_command_topic" default="primary_command"/>
+  <arg name="second_command_topic"  default="second_command"/>
+  <arg name="steer_report_topic"    default="/Vehicle/kona/interface/steer_report"/>
+  <arg name="acc_report_topic"      default="/Vehicle/kona/interface/acc_report"/>
+  <arg name="brake_report_topic"    default="/Vehicle/kona/interface/brake_report"/>
+  <arg name="wheel_report_topic"    default="/Vehicle/kona/interface/wheel_report"/>
+  <arg name="gear_report_topic"     default="/Vehicle/kona/interface/gear_report"/>
+  <arg name="fix_topic"             default="fix"/>
+  <arg name="heading_topic"         default="heading"/>
+  <arg name="pvd_topic"             default="probe_vehicle_data"/>
+
+  <!-- 제어 루프/스케일 파라미터 -->
+  <arg name="loop_rate_hz" default="20.0"/>
+  <arg name="speed_is_kmh" default="true"/>
+
+  <!-- CAN 직전 2차 속도 상한 거버너 -->
+  <arg name="gov_enabled"   default="true"/>
+  <arg name="gov_vmax_mps"  default="16.7"/>   <!-- ≈60 km/h -->
+  <arg name="gov_hyst_mps"  default="0.7"/>
+  <arg name="gov_Kp"        default="1.5"/>
+  <arg name="gov_a_min"     default="-3.0"/>
+  <arg name="gov_a_max"     default="+1.0"/>
+
+  <!-- eps_speed = steering deg/s 설정 -->
+  <arg name="eps_speed"          default="150"/> 
+
+  <!-- ==================== VEHICLE 영역 ==================== -->
+  <group ns="$(arg ns)" if="$(eval isVehicle)">
+
+    <include file="$(find tod_vehicle_bridge)/launch/nmea_navsat_driver.launch"/>
+
+    <include file="$(find kona_can_bridge)/launch/kona_can_bridge.launch">
+      <arg name="can_device"   value="can0"/>
+      <arg name="filters_yaml" value="$(find kona_can_bridge)/config/socketcan_filters.yaml" />
+      <arg name="rx_topic"     value="can/rx"/>
+      <arg name="tx_topic"     value="can/tx"/>
+      <arg name="rx_queue"     value="100"/>
+
+    </include>
+
+    <node  pkg="tod_vehicle_bridge" name="kona_control_probe_node" type="kona_control_probe_node" output="screen">
+      <!-- 루프/단위 -->
+      <param name="loop_rate_hz" value="$(arg loop_rate_hz)"/>
+      <param name="speed_is_kmh" value="$(arg speed_is_kmh)"/>
+
+      <!-- 토픽 설정 -->
+      <param name="control_cmd_topic"     value="$(arg control_cmd_topic)"/>
+      <param name="primary_command_topic" value="$(arg primary_command_topic)"/>
+      <param name="second_command_topic"  value="$(arg second_command_topic)"/>
+      <param name="steer_report_topic"    value="$(arg steer_report_topic)"/>
+      <param name="acc_report_topic"      value="$(arg acc_report_topic)"/>
+      <param name="brake_report_topic"    value="$(arg brake_report_topic)"/>
+      <param name="wheel_report_topic"    value="$(arg wheel_report_topic)"/>
+      <param name="gear_report_topic"     value="$(arg gear_report_topic)"/>
+      <param name="fix_topic"             value="$(arg fix_topic)"/>
+      <param name="heading_topic"         value="$(arg heading_topic)"/>
+      <param name="pvd_topic"             value="$(arg pvd_topic)"/>
+
+      <!-- 차량 메타 -->
+      <param name="vehicleName" value="$(arg vehicleName)"/>
+      <param name="vehicleNum"  value="$(arg vehicleNum)"/>
+      <param name="vehicleType" value="$(arg vehicleType)"/>
+
+      <!-- 2차 속도 상한 거버너 -->
+      <param name="gov_enabled"   value="$(arg gov_enabled)"/>
+      <param name="gov_vmax_mps"  value="$(arg gov_vmax_mps)"/>
+      <param name="gov_hyst_mps"  value="$(arg gov_hyst_mps)"/>
+      <param name="gov_Kp"        value="$(arg gov_Kp)"/>
+      <param name="gov_a_min"     value="$(arg gov_a_min)"/>
+      <param name="gov_a_max"     value="$(arg gov_a_max)"/>
+    </node>
+
+  </group>
+
+
+</launch>

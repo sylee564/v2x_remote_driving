@@ -1,0 +1,20 @@
+<launch>
+  <arg name="ns"   default="front"/>
+  <arg name="in"   default="/front/encoded/h264"/>
+  <arg name="out"  default="/front/decoded/image"/>
+  <arg name="stats" default=""/>
+  <arg name="codec" default="auto"/>   <!-- auto|h264|h265 -->
+  <arg name="mode"  default="auto"/>   <!-- auto|cpu|hw -->
+  <arg name="wait_for_idr" default="true"/>
+  <arg name="fps_hint"     default="30"/>
+
+  <node pkg="h26x_decoder" type="h26x_decoder_node" name="$(arg ns)_decoder" output="screen">
+    <param name="input_topic"  value="$(arg in)"/>
+    <param name="output_topic" value="$(arg out)"/>
+    <param name="stats_topic"  value="$(arg stats)"/>
+    <param name="codec"        value="$(arg codec)"/>
+    <param name="mode"         value="$(arg mode)"/>
+    <param name="wait_for_idr" value="$(arg wait_for_idr)"/>
+    <param name="fps_hint"     value="$(arg fps_hint)"/>
+  </node>
+</launch>

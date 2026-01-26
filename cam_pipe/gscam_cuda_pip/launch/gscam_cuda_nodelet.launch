@@ -1,0 +1,100 @@
+<launch>
+  <!-- ===== 공통 인자 ===== -->
+  <arg name="ns"        default="front"/>
+  <arg name="device"    default="/dev/video0"/>
+  <arg name="width"     default="1280"/>
+  <arg name="height"    default="720"/>
+  <arg name="fps"       default="30/1"/>
+  <arg name="format"    default="UYVY"/>
+
+  <!-- PiP 설정 -->
+  <arg name="pip_enable"     default="true"/>
+  <arg name="pip_topic"      default="/rear/camera/image_raw"/>
+  <arg name="parking_topic" default="/rear_wide/camera/image_rect"/> 
+
+  <arg name="pip_scale_w"    default="0.5"/>
+  <arg name="pip_scale_h"    default="0.2"/>
+  <arg name="pip_margin"     default="12"/>
+  <arg name="pip_alpha"      default="0.9"/>
+  <arg name="bg_dim_alpha"   default="0.18"/>
+  <arg name="draw_border"    default="true"/>
+  <arg name="border_px"      default="2"/>
+  <!-- top_center | bottom_right | bottom_left -->
+  <arg name="pip_position"   default="top_center"/>
+
+  <!-- 제어 토픽 (기어, 방향지시등, 주차 모드) -->
+  <arg name="control_topic"  default="/control_cmd"/>
+
+  <!-- ===== 네임스페이스 그룹 ===== -->
+  <group ns="$(arg ns)">
+    <!-- Nodelet Manager -->
+    <node pkg="nodelet" type="nodelet" name="gscam_pip_manager"
+          args="manager" output="screen">
+      <param name="num_worker_threads" value="8"/>
+    </node>
+
+    <!-- GStreamer + CUDA PiP Nodelet -->
+    <node pkg="nodelet" type="nodelet" name="gscam_cuda_pip"
+          args="load gscam_cuda_pip/GscamCudaPipNodelet gscam_pip_manager"
+          output="screen">
+          
+      <param name="ns"          value="$(arg ns)"/>
+
+      <!-- ===== GStreamer 파이프라인 =====
+           Jetson 계열: nvv4l2camerasrc → NVMM → nvvidconv → BGRx → videoconvert → BGR → queue
+           (줄바꿈/들여쓰기 없이 한 줄로 유지: 공백/개행으로 인해 'video' 요소 오류 방지) -->
+      <param name="gscam_config"
+             value="nvv4l2camerasrc device=$(arg device) !
+                    video/x-raw(memory:NVMM),width=$(arg width),height=$(arg height),framerate=$(arg fps),format=$(arg format) !
+                    nvvidconv !
+                    video/x-raw,format=BGRx,width=$(arg width),height=$(arg height) !
+                    videoconvert n-threads=2 !
+                    video/x-raw,format=BGR !
+                    queue leaky=downstream max-size-buffers=2 max-size-time=0 max-size-bytes=0"/>
+
+      <!-- 필요시 v4l2src 사용 예시 (주석 해제하여 교체)
+      <param name="gscam_config"
+             value="v4l2src device=$(arg device) io-mode=2 do-timestamp=true !
+                    video/x-raw,format=$(arg format),width=$(arg width),height=$(arg height),framerate=$(arg fps) !
+                    videoconvert n-threads=2 !
+                    video/x-raw,format=BGR !
+                    queue leaky=downstream max-size-buffers=2 max-size-time=0 max-size-bytes=0"/>
+      -->
+
+      <!-- 동작 옵션 -->
+      <param name="sync_sink"          value="true"/>
+      <param name="preroll"            value="false"/>
+      <param name="use_gst_timestamps" value="true"/>
+      <param name="reopen_on_eof"      value="false"/>
+
+      <!-- 카메라 보정/프레임 설정 -->
+      <param name="camera_info_url" value="file://$(find nru_cameras)/config/$(arg ns).yaml"/>
+      <param name="camera_name"     value="$(arg ns)"/>
+      <param name="frame_id"        value="$(arg ns)_frame"/>
+      <param name="image_encoding"  value="rgb8"/>
+      <param name="use_rectify"     value="true"/>
+
+      <!-- PiP 파라미터 -->
+      <param name="pip_enable"     value="$(arg pip_enable)"/>
+      <param name="pip_topic"      value="$(arg pip_topic)"/>
+      <param name="pip_scale_w"    value="$(arg pip_scale_w)"/>
+      <param name="pip_scale_h"    value="$(arg pip_scale_h)"/>
+      <param name="pip_margin"     value="$(arg pip_margin)"/>
+      <param name="pip_alpha"      value="$(arg pip_alpha)"/>
+      <param name="bg_dim_alpha"   value="$(arg bg_dim_alpha)"/>
+      <param name="draw_border"    value="$(arg draw_border)"/>
+      <param name="border_px"      value="$(arg border_px)"/>
+      <param name="pip_position"   value="$(arg pip_position)"/>
+
+
+      <!-- 퍼블리시 토픽 리맵 (nodelet 내부 기본 이름 → 네임스페이스 기준 고정 경로) -->
+      <remap from="image_raw"     to="camera/image_raw"/>
+      <remap from="image_rect"    to="camera/image_rect"/>
+      <remap from="image_overlay" to="camera/image_overlay"/>
+
+      <!-- control_cmd 구독 리맵 -->
+      <remap from="control_cmd"          to="$(arg control_topic)"/>
+
+    </node>
+  </group>
+</launch>

@@ -1,0 +1,7 @@
+<library path="lib/libh26x_decoder_nodelet">
+  <class name="h26x_decoder/H26xDecoderNodelet"
+         type="h26xdec::H26xDecoderNodelet"
+         base_class_type="nodelet::Nodelet">
+    <description>H.26x decoder nodelet</description>
+  </class>
+</library>

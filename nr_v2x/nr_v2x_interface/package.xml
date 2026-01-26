@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>nr_v2x_interface</name>
+  <version>0.1.0</version>
+  <description>5G NR V2X TCP/UDP transport and extensible protocol interface</description>
+
+  <maintainer email="you@example.com">you</maintainer>
+  <license>Proprietary</license>
+
+  <!-- Build system -->
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <!-- Build dependencies -->
+  <build_depend>roscpp</build_depend>
+  <build_depend>tcpip_msgs</build_depend>
+  <build_depend>tod_msgs</build_depend>
+  <build_depend>nr_v2x_helper</build_depend>
+  <build_depend>nr_v2x_msgs</build_depend>
+  <build_depend>diagnostic_msgs</build_depend>
+  <build_depend>h26x_encoder</build_depend>
+
+  <!-- Exported build deps (headers/lib consumers) -->
+  <build_export_depend>roscpp</build_export_depend>
+  <build_export_depend>tcpip_msgs</build_export_depend>
+  <build_export_depend>tod_msgs</build_export_depend>
+  <build_export_depend>nr_v2x_helper</build_export_depend>
+  <build_export_depend>nr_v2x_msgs</build_export_depend>
+  <build_export_depend>diagnostic_msgs</build_export_depend>
+  <build_export_depend>h26x_encoder</build_export_depend>
+
+  <!-- Runtime deps -->
+  <exec_depend>roscpp</exec_depend>
+  <exec_depend>tcpip_msgs</exec_depend>
+  <exec_depend>tod_msgs</exec_depend>
+  <exec_depend>nr_v2x_helper</exec_depend>
+  <exec_depend>nr_v2x_msgs</exec_depend>
+  <exec_depend>diagnostic_msgs</exec_depend>
+  <exec_depend>h26x_encoder</exec_depend>
+
+  <export/>
+</package>

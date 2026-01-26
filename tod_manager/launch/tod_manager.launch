@@ -1,0 +1,52 @@
+<launch>
+  <!-- 모드/설정 -->
+  <arg name="isVehicle" default="false"/>
+  <arg name="v2x_config" default="$(find tod_manager)/config/V2X_Config.yaml"/>
+  <param name="v2x_config" value="$(arg v2x_config)"/>
+
+   <group if="$(arg isVehicle)">
+      <node pkg="tod_manager" type="tod_manager_node" name="tod_manager" output="screen">
+        <param name="isVehicle" value="$(arg isVehicle)"/>
+
+        <!-- service -->
+        <remap from="change_input_device" to="/Operator/InputDevices/InputDevice/change_input_device"/>
+
+        <!-- publish -->
+        <remap from="pub_tod_status"            to="/Vehicle/Manager/tod_status"/>
+
+        <!-- subscribe -->
+        <remap from="sub_tod_status"         to="/Operator/Manager/tod_status"/>
+        <remap from="/tod/control_cmd"       to="/Vehicle/Control/control_cmd_data"/>
+        <remap from="/tod/probe_vehicle_data" to="/Vehicle/kona/interface/probe_vehicle_data"/>
+        <remap from="/nr_v2x/stats"           to="/v2x/stats"/>
+        <remap from="/nr_v2x/modem_rx"       to="/v2x/status/modem_rx"/>
+        <remap from="/nr_v2x/modem_tx"       to="/v2x/status/modem_tx"/>
+        <remap from="/nr_v2x/comm_status"    to="/v2x/status/comm"/>
+        <remap from="/tcpip/status"          to="/v2x/tcp_status"/>
+        <remap from="acc_report"             to="/Vehicle/kona/interface/acc_report"/>
+        <remap from="steer_report"           to="/Vehicle/kona/interface/steer_report"/>
+    </node>
+   </group>
+
+    <group unless="$(arg isVehicle)">
+      <node pkg="tod_manager" type="tod_manager_node" name="tod_manager" output="screen">
+        <param name="isVehicle" value="$(arg isVehicle)"/>
+
+        <!-- service -->
+        <remap from="change_input_device" to="/Operator/InputDevices/InputDevice/change_input_device"/>
+
+        <!-- publish -->
+        <remap from="pub_tod_status"            to="/Operator/Manager/tod_status"/>
+
+        <!-- subscribe -->
+        <remap from="sub_tod_status"            to="/Vehicle/Manager/tod_status"/>
+        <remap from="/tod/control_cmd"       to="/Operator/Control/control_cmd_data"/>
+        <remap from="/tod/probe_vehicle_data" to="/Operator/kona/probe_vehicle_data"/>
+        <remap from="/nr_v2x/stats"           to="/v2x/stats"/>
+        <remap from="/nr_v2x/modem_rx"       to="/v2x/status/modem_rx"/>
+        <remap from="/nr_v2x/modem_tx"       to="/v2x/status/modem_tx"/>
+        <remap from="/nr_v2x/comm_status"    to="/v2x/status/comm"/>
+        <remap from="/tcpip/status"          to="/v2x/tcp_status"/>
+    </node>
+   </group>
+</launch>

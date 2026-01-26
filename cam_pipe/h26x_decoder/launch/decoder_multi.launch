@@ -1,0 +1,50 @@
+<launch>
+
+    <arg name="stats" default=""/>
+    <arg name="codec" default="auto"/> 
+    <arg name="mode" default="auto"/> 
+    <arg name="wait_for_idr" default="true"/>
+    <arg name="fps_hint" default="30"/>
+
+    <include file="$(find h26x_decoder)/launch/decoder.launch">
+        <arg name="ns"   value="front"/>
+        <arg name="in" value="rx/front/encoded/h26x"/>
+        <arg name="out" value="/front/image"/>
+        <arg name="stats" value="$(arg stats)"/>
+        <arg name="codec" value="$(arg codec)"/>
+        <arg name="mode" value="$(arg mode)"/>
+        <arg name="wait_for_idr" value="$(arg wait_for_idr)"/>
+        <arg name="fps_hint" value="$(arg fps_hint)"/>
+    </include>
+
+    <include file="$(find h26x_decoder)/launch/decoder.launch">
+        <arg name="ns"   value="left"/>
+        <arg name="in" value="rx/left/encoded/h26x"/>
+        <arg name="out" value="/left/image"/>
+        <arg name="stats" value="$(arg stats)"/>
+        <arg name="codec" value="$(arg codec)"/>
+        <arg name="mode" value="$(arg mode)"/>
+        <arg name="wait_for_idr" value="$(arg wait_for_idr)"/>
+        <arg name="fps_hint" value="$(arg fps_hint)"/>
+    </include>
+
+    <!-- <include file="$(find h26x_decoder)/launch/decoder.launch">
+        <param name="input_topic" value="rx/right/encoded/h264"/>
+        <param name="output_topic" value="/right/image"/>
+        <param name="stats_topic" value="$(arg stats)"/>
+        <param name="codec" value="$(arg codec)"/>
+        <param name="mode" value="$(arg mode)"/>
+        <param name="wait_for_idr" value="$(arg wait_for_idr)"/>
+        <param name="fps_hint" value="$(arg fps_hint)"/>
+    </include>
+
+    <include file="$(find h26x_decoder)/launch/decoder.launch">
+        <param name="input_topic" value="/avm/encoded/h264"/>
+        <param name="output_topic" value="/avm/image"/>
+        <param name="stats_topic" value="$(arg stats)"/>
+        <param name="codec" value="$(arg codec)"/>
+        <param name="mode" value="$(arg mode)"/>
+        <param name="wait_for_idr" value="$(arg wait_for_idr)"/>
+        <param name="fps_hint" value="$(arg fps_hint)"/>
+    </include> -->
+</launch>

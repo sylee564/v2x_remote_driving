@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- 공통 인자 -->
+  <arg name="ns"           default="Vehicle/kona/interface"/>
+  <arg name="can_device"   default="can0"/>
+  <arg name="rx_topic"     default="can/rx"/>
+  <arg name="tx_topic"     default="can/tx"/>
+  <arg name="rx_queue"     default="100"/>
+  <arg name="filters_yaml" default="$(find kona_can_bridge)/config/socketcan_filters.yaml"/>
+
+  <!-- <group ns="$(arg ns)"> -->
+    <!-- socketcan_bridge 기동 -->
+    <include file="$(find kona_can_bridge)/launch/socketcan_bridge_kona.launch">
+      <arg name="can_device"   value="$(arg can_device)"/>
+      <arg name="rx_topic"     value="$(arg rx_topic)"/>
+      <arg name="tx_topic"     value="$(arg tx_topic)"/>
+      <arg name="rx_queue"     value="$(arg rx_queue)"/>
+      <arg name="filters_yaml" value="$(arg filters_yaml)"/>
+    </include>
+
+    <!-- Kona CAN 노드 -->
+    <node pkg="kona_can_bridge" type="kona_can_node" name="kona_can_node" output="screen">
+      <!-- 노드 내부 파라미터로 rx/tx 읽음 -->
+      <param name="can_rx_topic" value="$(arg rx_topic)"/>
+      <param name="can_tx_topic" value="$(arg tx_topic)"/>
+      <!-- 전송 주기 필요시 -->
+      <!-- <param name="tx_rate_hz" value="100.0"/> -->
+    </node>
+  <!-- </group> -->
+</launch>

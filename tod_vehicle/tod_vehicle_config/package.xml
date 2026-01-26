@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>tod_vehicle_config</name>
+  <version>1.0.0</version>
+  <description>The tod_vehicle_config package</description>
+
+  <maintainer email="sylee@avgenius.kr">sang_young_lee</maintainer>
+
+  <license>LGPLv3</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <export></export>
+</package>
