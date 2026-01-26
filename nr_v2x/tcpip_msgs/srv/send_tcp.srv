@@ -1,0 +1,5 @@
+# Sends a data packet over an open TCP socket.
+
+tcp_packet  packet      # The TCP packet to send.
+
+---

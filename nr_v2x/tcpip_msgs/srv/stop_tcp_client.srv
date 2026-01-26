@@ -1,0 +1,5 @@
+# Stops an existing TCP client on the driver.
+
+uint32  client_id       # The ID of the TCP client to stop.
+
+---

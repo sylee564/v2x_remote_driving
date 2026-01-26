@@ -1,0 +1,8 @@
+# Starts a new TCP client on the driver.
+
+endpoint    local_endpoint      # The local endpoint of the client.
+endpoint    remote_endpoint     # The remote endpoint of the server to connect to.
+
+---
+
+uint32      client_id           # If successful, provides the ID of the started client.

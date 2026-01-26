@@ -1,0 +1,7 @@
+# Starts a TCP server on the driver to listen for incoming client connections.
+
+endpoint    local_endpoint      # The local endpoint to start the server on.
+
+---
+
+uint32  server_id       # If successful, provides the ID of the started server.

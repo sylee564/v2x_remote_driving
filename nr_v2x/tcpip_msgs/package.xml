@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package format="2">
+
+  <name>tcpip_msgs</name>
+  <version>1.0.0</version>
+  <description>ROS messages for the tcpip package.</description>
+  <license>MIT</license>
+
+  <author email="sylee@avgenius.kr">avg</author>
+  <maintainer email="sylee@avgenius.kr">avg</maintainer>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>message_generation</build_depend>
+  <exec_depend>message_runtime</exec_depend>
+
+</package>

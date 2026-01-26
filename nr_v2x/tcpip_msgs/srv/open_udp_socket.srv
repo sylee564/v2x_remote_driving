@@ -1,0 +1,7 @@
+# Opens a new UDP socket on the driver.
+
+endpoint    local_endpoint      # The local endpoint to open the socket on.
+
+---
+
+uint32      socket_id       # If successful, provides the ID of the opened socket.

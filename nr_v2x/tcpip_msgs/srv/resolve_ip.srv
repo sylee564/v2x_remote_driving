@@ -1,0 +1,7 @@
+# Resolve the IP address of a string hostname.
+
+string      hostname        # The string hostname to attempt to resolve.
+
+---
+
+uint8[4]    ip              # The resolved IP address of the hostname.

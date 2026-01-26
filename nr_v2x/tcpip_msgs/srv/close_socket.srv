@@ -1,0 +1,5 @@
+# Closes an open TCP or UDP socket.
+
+uint32  socket_id       # The ID of the socket to close.
+
+---
